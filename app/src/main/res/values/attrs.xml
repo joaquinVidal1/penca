@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ViewPagerIndicator">
+        <attr name="vpiIndicatorMargin" format="dimension" />
+        <attr name="vpiIndicatorTint" format="color" />
+    </declare-styleable>
+</resources>
