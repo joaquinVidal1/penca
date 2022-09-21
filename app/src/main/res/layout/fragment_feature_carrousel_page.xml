@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/carrousel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="18dp">
+        android:layout_height="wrap_content">
+<!--        android:paddingHorizontal="18dp">-->
 
         <ImageView
             android:id="@+id/banner_image"
@@ -15,6 +16,7 @@
             android:background="@drawable/banner_image_shape"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
+            android:paddingHorizontal="24dp"
             android:src="@drawable/penarol_vs_cerrito"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

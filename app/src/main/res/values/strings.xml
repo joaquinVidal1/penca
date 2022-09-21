@@ -4,4 +4,9 @@
     <string name="detalle_partido_text">Detalle partido</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search">Buscar</string>
+    <string name="accerted">Acertado</string>
+    <string name="matchs">Partidos</string>
+    <string name="missed">Errado</string>
+    <string name="played_with_no_result">Jugado s/resultado</string>
 </resources>

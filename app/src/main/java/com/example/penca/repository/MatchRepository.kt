@@ -1,39 +1,43 @@
 package com.example.penca.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.penca.R
 import com.example.penca.domain.entities.*
 import java.time.LocalDate
+import javax.inject.Inject
 
-class MatchRepository() {
-    val teamsList = listOf<Team>(
-        Team(0, "Peñarol", R.drawable.escudo_penarol),
-        Team(1, "Nacional", R.drawable.escudo_nacional),
-        Team(2, "Maldonado", R.drawable.escudo_maldonado),
-        Team(3, "Fénix", R.drawable.escudo_fenix),
-        Team(4, "Boston River", R.drawable.escudo_boston_river)
+class MatchRepository @Inject constructor() {
+    val teamList: LiveData<List<Team>>
+        get() = _teamsList
+    private val _teamsList = MutableLiveData<List<Team>>(
+        listOf(
+            Team(0, "Peñarol", R.drawable.escudo_penarol),
+            Team(1, "Nacional", R.drawable.escudo_nacional),
+            Team(2, "Maldonado", R.drawable.escudo_maldonado),
+            Team(3, "Fénix", R.drawable.escudo_fenix),
+            Team(4, "Boston River", R.drawable.escudo_boston_river)
+        )
     )
-    val matchList = listOf<Match>(
+    private val matchList = listOf<Match>(
         Match(
             0,
-            0,
-            1,
-            MatchStatus.Pending,
+            _teamsList.value?.find { it.id ==0 }!!,
+            _teamsList.value?.find { it.id ==1 }!!,
             LocalDate.of(2022, 4, 26),
         ),
         Match(
             1,
-            2,
-            4,
-            MatchStatus.Played,
+            _teamsList.value?.find { it.id ==2 }!!,
+            _teamsList.value?.find { it.id ==4 }!!,
             LocalDate.of(2022, 4, 26),
             goalsLocal = 1,
             goalsAway = 0
         ),
         Match(
             2,
-            0,
-            1,
-            MatchStatus.Played,
+            _teamsList.value?.find { it.id ==0 }!!,
+            _teamsList.value?.find { it.id ==1 }!!,
             LocalDate.of(2022, 3, 23),
             3,
             1,
@@ -50,28 +54,30 @@ class MatchRepository() {
         ),
         Match(
             3,
-            3,
-            1,
-            MatchStatus.Played,
+            _teamsList.value?.find { it.id ==3 }!!,
+            _teamsList.value?.find { it.id ==1 }!!,
             LocalDate.of(2022, 4, 25),
             2,
             0
         ),
         Match(
             4,
-            3,
-            4,
-            MatchStatus.Played,
+            _teamsList.value?.find { it.id ==3 }!!,
+            _teamsList.value?.find { it.id ==4 }!!,
             LocalDate.of(2022, 4, 25),
             0,
             0
         )
     )
-    val betList = listOf<Bet>(
-        Bet(matchList.find { it.id == 0 }!!, BetStatus.Pending, 1, 0),
-        Bet(matchList.find { it.id == 1 }!!, BetStatus.Done, 1, 0),
-        Bet(matchList.find { it.id == 2 }!!, BetStatus.Done, 1, 3),
-        Bet(matchList.find { it.id == 3 }!!, BetStatus.Done, 1, 0),
-        Bet(matchList.find { it.id == 4 }!!, BetStatus.Pending)
+    private val _betList = MutableLiveData<List<Bet>>(
+        listOf(
+            Bet(matchList.find { it.id == 0 }!!, BetStatus.Pending, 1, 0),
+            Bet(matchList.find { it.id == 1 }!!, BetStatus.Done, 1, 0),
+            Bet(matchList.find { it.id == 2 }!!, BetStatus.Done, 1, 3),
+            Bet(matchList.find { it.id == 3 }!!, BetStatus.Done, 1, 0),
+            Bet(matchList.find { it.id == 4 }!!, BetStatus.Pending)
+        )
     )
+    val betList: LiveData<List<Bet>>
+        get() = _betList
 }

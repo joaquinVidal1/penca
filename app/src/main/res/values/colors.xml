@@ -11,4 +11,21 @@
     <color name="action_bar_background">#161B28</color>
     <color name="color_dot_selected">#6789DF</color>
     <color name="color_dot_unselected">#6789DF</color>
+    <color name="color_bet_border">#5157D1</color>
+    <color name="color_background_bet">#7188CE</color>
+    <color name="color_background_bet_status_pending">#1937A3</color>
+    <color name="color_background_bet_header_pending">#5C77C3</color>
+    <color name="color_background_app">#212045</color>
+    <color name="color_background_bet_body">#313055</color>
+    <color name="color_background_score">#4D4D72</color>
+    <color name="see_details">#BCC0E5</color>
+    <color name="search_hint_color">#FAFAFA</color>
+    <color name="color_background_bet_header_missed">#78283A</color>
+    <color name="color_background_bet_header_accerted">#396766</color>
+    <color name="color_background_bet_status_missed">#D03157</color>
+    <color name="color_background_bet_status_accerted">#00A362</color>
+    <color name="color_background_bet_status_not_done">#A19F9D</color>
+    <color name="color_background_bet_header_not_done">#606071</color>
+
+
 </resources>

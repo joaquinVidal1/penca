@@ -3,38 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="12dp"
+        android:background="@color/color_background_app">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/carrousel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/purple_200"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.example.penca.mainscreen.ViewPagerIndicator
-                android:id="@+id/view_page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="@+id/carrousel"
-                app:layout_constraintStart_toStartOf="@+id/carrousel"
-                app:layout_constraintTop_toBottomOf="@id/carrousel"
-                tools:background="@color/black"
-                tools:layout_height="20dp"
-                tools:layout_width="100dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

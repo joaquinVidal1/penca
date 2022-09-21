@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_list_item_bet"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:padding="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header_bet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_list_item_bet_header_pending"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/match_status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:background="@drawable/list_item_status_box"
+                android:fontFamily="@font/lato"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Pendiente" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_list_item_bet_body"
+            app:layout_constraintStart_toStartOf="@id/header_bet"
+            app:layout_constraintTop_toBottomOf="@id/header_bet">
+
+            <ImageView
+                android:id="@+id/image_local_team"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/escudo_penarol"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/name_local_team"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/lato"
+                android:text="Peñarol"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/image_local_team"
+                app:layout_constraintStart_toStartOf="@id/image_local_team"
+                app:layout_constraintTop_toBottomOf="@id/image_local_team" />
+
+            <ImageView
+                android:id="@+id/image_away_team"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:src="@drawable/escudo_nacional"
+                app:layout_constraintBottom_toBottomOf="@id/image_local_team"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/image_local_team" />
+
+            <TextView
+                android:id="@+id/name_away_team"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato"
+                android:text="Nacional"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/name_local_team"
+                app:layout_constraintEnd_toEndOf="@id/image_away_team"
+                app:layout_constraintStart_toStartOf="@id/image_away_team"
+                app:layout_constraintTop_toTopOf="@id/name_local_team" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/user_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_score"
+                android:paddingHorizontal="28dp"
+                android:paddingVertical="9dp"
+                app:layout_constraintBottom_toBottomOf="@id/name_local_team"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/local_team_score_bet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/score_team_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/lato"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="@id/local_team_score_bet"
+                    app:layout_constraintStart_toEndOf="@id/local_team_score_bet"
+                    app:layout_constraintTop_toTopOf="@id/local_team_score_bet" />
+
+                <TextView
+                    android:id="@+id/away_team_score_bet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/lato"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="@id/local_team_score_bet"
+                    app:layout_constraintStart_toEndOf="@id/score_team_score"
+                    app:layout_constraintTop_toTopOf="@id/local_team_score_bet" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/final_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                android:text="3 - 0"
+                android:textColor="@color/color_background_score"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@id/user_score"
+                app:layout_constraintStart_toStartOf="@id/user_score"
+                app:layout_constraintTop_toBottomOf="@id/user_score" />
+
+            <Button
+                android:id="@+id/see_details_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/background_see_details_button"
+                android:fontFamily="@font/lato"
+                android:padding="8dp"
+                android:text="Ver detalles"
+                android:textAllCaps="false"
+                android:textColor="@color/see_details"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/final_score" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
