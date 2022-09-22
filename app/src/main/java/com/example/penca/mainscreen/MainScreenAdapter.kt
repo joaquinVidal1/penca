@@ -15,7 +15,6 @@ import java.lang.ClassCastException
 
 class MainScreenAdapter(
     val context: Context,
-    val fragmentActivity: FragmentActivity,
     var screenItems: List<ScreenItem>,
     private val onModifyLocalListener: (Bet) -> Unit,
     private val onModifyAwayListener: (Bet) -> Unit,
@@ -44,6 +43,13 @@ class MainScreenAdapter(
                     false
                 )
             )
+            ITEM_VIEW_TYPE_NOTHING_FOUND -> NothingFoundViewHolder(
+                NothingFoundBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw ClassCastException("Unknow viewType $viewType")
         }
     }
@@ -64,6 +70,9 @@ class MainScreenAdapter(
                     item as ScreenItem.ScreenCarrousel
                 )
             }
+            is  NothingFoundViewHolder -> {
+                holder.bind()
+            }
         }
     }
 
@@ -76,6 +85,7 @@ class MainScreenAdapter(
             is ScreenItem.ScreenCarrousel -> ITEM_VIEW_TYPE_CARROUSEL
             is ScreenItem.ScreenHeader -> ITEM_VIEW_TYPE_HEADER_DATE
             is ScreenItem.ScreenBet -> ITEM_VIEW_TYPE_BET
+            is ScreenItem.ScreenNothingFound -> ITEM_VIEW_TYPE_NOTHING_FOUND
         }
     }
 
@@ -93,9 +103,18 @@ class MainScreenAdapter(
             binding.imageAwayTeam.setImageResource(bet.match.awayTeam.image)
             binding.nameAwayTeam.text = bet.match.awayTeam.name
             if (bet.match.status == MatchStatus.Pending) {
+
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
             } else {
                 binding.finalScore.visibility = View.VISIBLE
+                binding.userScore.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.color_background_bet_body
+                    )
+                )
+
+                binding.seeDetailsButton.visibility = View.VISIBLE
                 binding.finalScore.text =
                     bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
                 if (bet.status == BetStatus.Done) {
@@ -107,8 +126,6 @@ class MainScreenAdapter(
                         bindPlayedMatchCorrectBet()
                     }
                 } else {
-                    binding.awayTeamScoreBet.text = ""
-                    binding.localTeamScoreBet.text = ""
                     bindPlayedMatchWithoutBet()
                 }
                 View.VISIBLE
@@ -117,12 +134,13 @@ class MainScreenAdapter(
 
         private fun bindPlayedMatchWithoutBet() {
             statusText.text = context.getString(R.string.played_with_no_result)
-            statusText.setBackgroundColor(
-                ContextCompat.getColor(
+            binding.awayTeamScoreBet.text = ""
+            binding.localTeamScoreBet.text = ""
+            statusText.background =
+                ContextCompat.getDrawable(
                     context,
-                    R.color.color_background_bet_status_not_done
+                    R.drawable.list_item_status_box_not_done
                 )
-            )
             binding.headerBet.background = ContextCompat.getDrawable(
                 context,
                 R.drawable.background_list_item_bet_header_not_done
@@ -131,12 +149,12 @@ class MainScreenAdapter(
 
         private fun bindPlayedMatchCorrectBet() {
             statusText.text = context.getString(R.string.accerted)
-            statusText.setBackgroundColor(
-                ContextCompat.getColor(
+            statusText.background =
+                ContextCompat.getDrawable(
                     context,
-                    R.color.color_background_bet_status_accerted
+                    R.drawable.list_item_status_box_correct
                 )
-            )
+
             binding.headerBet.background =
                 ContextCompat.getDrawable(
                     context,
@@ -146,12 +164,11 @@ class MainScreenAdapter(
 
         private fun bindPlayedMatchWrongBet() {
             statusText.text = context.getString(R.string.missed)
-            statusText.setBackgroundColor(
-                ContextCompat.getColor(
+            statusText.background =
+                ContextCompat.getDrawable(
                     context,
-                    R.color.color_background_bet_status_missed
+                    R.drawable.list_item_status_box_incorrect
                 )
-            )
             binding.headerBet.background =
                 ContextCompat.getDrawable(
                     context,
@@ -161,20 +178,27 @@ class MainScreenAdapter(
 
         }
 
-        private fun bindPendingMatch(onEditLocalResult: (Bet) -> Unit,
-                                     onEditAwayResult: (Bet) -> Unit, bet: Bet ) {
+        private fun bindPendingMatch(
+            onEditLocalResult: (Bet) -> Unit,
+            onEditAwayResult: (Bet) -> Unit, bet: Bet
+        ) {
             binding.headerBet.background =
                 ContextCompat.getDrawable(
                     context,
                     R.drawable.background_list_item_bet_header_pending
 
-            )
-            statusText.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.color_background_bet_status_pending
                 )
+            statusText.background =
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.list_item_status_box_pending
+                )
+
+            binding.userScore.background = ContextCompat.getDrawable(
+                context,
+                R.drawable.background_score
             )
+
             binding.finalScore.visibility = View.INVISIBLE
             binding.localTeamScoreBet.setOnClickListener { onEditLocalResult(bet) }
             binding.awayTeamScoreBet.setOnClickListener { onEditAwayResult(bet) }
@@ -196,6 +220,10 @@ class MainScreenAdapter(
             binding.viewPageIndicator.setUpWithViewPager2(binding.carrousel)
             binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
         }
+    }
+
+    inner class NothingFoundViewHolder(private var binding: NothingFoundBinding): RecyclerView.ViewHolder(binding.root){
+        fun bind(){}
     }
 
 }

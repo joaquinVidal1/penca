@@ -18,15 +18,20 @@
         <entry key="app/src/main/res/drawable/indicator_dot_selected.xml" value="0.253" />
         <entry key="app/src/main/res/drawable/indicator_dot_unselected.xml" value="0.253" />
         <entry key="app/src/main/res/drawable/list_item_status_box.xml" value="0.204" />
+        <entry key="app/src/main/res/drawable/list_item_status_box_correct.xml" value="0.188" />
+        <entry key="app/src/main/res/drawable/list_item_status_box_incorrect.xml" value="0.188" />
+        <entry key="app/src/main/res/drawable/list_item_status_box_not_done.xml" value="0.188" />
         <entry key="app/src/main/res/drawable/penarol_cerrito_banner_image.xml" value="0.185" />
         <entry key="app/src/main/res/drawable/penarol_vs_cerrito.xml" value="0.1425" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.38345572261487026" />
         <entry key="app/src/main/res/layout/fragment_feature_carrousel_page.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_main_screen.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/list_item_bet.xml" value="0.7645721435546875" />
-        <entry key="app/src/main/res/layout/list_item_carrousel.xml" value="0.3458333333333333" />
+        <entry key="app/src/main/res/layout/list_item_bet.xml" value="0.4566265060240964" />
+        <entry key="app/src/main/res/layout/list_item_carrousel.xml" value="0.49607329842931935" />
         <entry key="app/src/main/res/layout/list_item_header_main_screen.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/list_item_search.xml" value="0.41604010025062654" />
+        <entry key="app/src/main/res/layout/list_item_search.xml" value="0.48711943793911006" />
+        <entry key="app/src/main/res/layout/nothing_found.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/nothing_found_xml.xml" value="0.28125" />
       </map>
     </option>
   </component>

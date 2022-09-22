@@ -29,7 +29,7 @@ class MainScreenFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main_screen, container, false
         )
-        adapter = MainScreenAdapter(requireContext(), requireActivity(), ArrayList(), {}, {})
+        adapter = MainScreenAdapter(requireContext(), ArrayList(), {}, {})
         binding.recyclerList.adapter = adapter
         return binding.root
     }
@@ -38,17 +38,28 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mainScreenList = binding.recyclerList
         val carrouselAdapter = BannerSlidePagerAdapter(requireActivity())
-        val carrouselFragment = FeatureCarrouselFragment()
         val manager = LinearLayoutManager(activity)
+
         mainScreenList.layoutManager = manager
 
         viewModel.bets.observe(viewLifecycleOwner) {
             val screenList = mutableListOf<ScreenItem>(ScreenItem.ScreenCarrousel(carrouselAdapter))
-            screenList.addAll(it)
+            if (it.isEmpty()){
+                screenList.add(ScreenItem.ScreenNothingFound())
+            }else {
+                screenList.addAll(it)
+            }
             adapter.screenItems = screenList
             adapter.notifyDataSetChanged()
         }
 
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllItems()
     }
 
 }

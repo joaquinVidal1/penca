@@ -1,5 +1,6 @@
 package com.example.penca.mainscreen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
 
     private fun getScreenList(list: List<Bet>): List<ScreenItem> {
         val screenList = mutableListOf<ScreenItem>()
-        list.groupBy { it.match.date }.entries.forEach { (date, bets) ->
+        list.sortedByDescending { it.match.date }.groupBy { it.match.date }.entries.forEach { (date, bets) ->
             screenList.add(
                 ScreenItem.ScreenHeader(
                     Header(Header.getHeaderText(date))
@@ -29,6 +30,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
             screenList.addAll(bets.map { bet -> ScreenItem.ScreenBet(bet) })
         }
         return screenList
+    }
+
+    fun getAllItems() {
+        Log.i("ViewModel", "update items")
     }
 
 }

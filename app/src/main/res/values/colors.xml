@@ -19,7 +19,7 @@
     <color name="color_background_bet_body">#313055</color>
     <color name="color_background_score">#4D4D72</color>
     <color name="see_details">#BCC0E5</color>
-    <color name="search_hint_color">#FAFAFA</color>
+    <color name="search_hint_color">#7A798F</color>
     <color name="color_background_bet_header_missed">#78283A</color>
     <color name="color_background_bet_header_accerted">#396766</color>
     <color name="color_background_bet_status_missed">#D03157</color>
