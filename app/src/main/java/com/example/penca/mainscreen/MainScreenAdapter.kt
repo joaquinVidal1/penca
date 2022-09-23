@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.penca.R
 import com.example.penca.databinding.*
@@ -18,19 +17,13 @@ class MainScreenAdapter(
     var screenItems: List<ScreenItem>,
     private val onModifyLocalListener: (Bet) -> Unit,
     private val onModifyAwayListener: (Bet) -> Unit,
+    private val onSeeDetailsClicked: (Bet) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ITEM_VIEW_TYPE_BET -> BetViewHolder(
                 ListItemBetBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-            ITEM_VIEW_TYPE_CARROUSEL -> ScreenCarrouselViewHolder(
-                ListItemCarrouselBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -65,12 +58,7 @@ class MainScreenAdapter(
             is HeaderViewHolder -> {
                 holder.bind(item as ScreenItem.ScreenHeader)
             }
-            is ScreenCarrouselViewHolder -> {
-                holder.bind(
-                    item as ScreenItem.ScreenCarrousel
-                )
-            }
-            is  NothingFoundViewHolder -> {
+            is NothingFoundViewHolder -> {
                 holder.bind()
             }
         }
@@ -82,7 +70,6 @@ class MainScreenAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (screenItems[position]) {
-            is ScreenItem.ScreenCarrousel -> ITEM_VIEW_TYPE_CARROUSEL
             is ScreenItem.ScreenHeader -> ITEM_VIEW_TYPE_HEADER_DATE
             is ScreenItem.ScreenBet -> ITEM_VIEW_TYPE_BET
             is ScreenItem.ScreenNothingFound -> ITEM_VIEW_TYPE_NOTHING_FOUND
@@ -102,10 +89,13 @@ class MainScreenAdapter(
             binding.nameLocalTeam.text = bet.match.homeTeam.name
             binding.imageAwayTeam.setImageResource(bet.match.awayTeam.image)
             binding.nameAwayTeam.text = bet.match.awayTeam.name
+            binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
+            binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
             if (bet.match.status == MatchStatus.Pending) {
-
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
             } else {
+                binding.localTeamScoreBet.isClickable = false
+                binding.awayTeamScoreBet.isClickable = false
                 binding.finalScore.visibility = View.VISIBLE
                 binding.userScore.setBackgroundColor(
                     ContextCompat.getColor(
@@ -180,7 +170,8 @@ class MainScreenAdapter(
 
         private fun bindPendingMatch(
             onEditLocalResult: (Bet) -> Unit,
-            onEditAwayResult: (Bet) -> Unit, bet: Bet
+            onEditAwayResult: (Bet) -> Unit,
+            bet: Bet
         ) {
             binding.headerBet.background =
                 ContextCompat.getDrawable(
@@ -198,8 +189,9 @@ class MainScreenAdapter(
                 context,
                 R.drawable.background_score
             )
-
             binding.finalScore.visibility = View.INVISIBLE
+            binding.localTeamScoreBet.isClickable = true
+            binding.awayTeamScoreBet.isClickable = true
             binding.localTeamScoreBet.setOnClickListener { onEditLocalResult(bet) }
             binding.awayTeamScoreBet.setOnClickListener { onEditAwayResult(bet) }
             binding.seeDetailsButton.visibility = View.GONE
@@ -213,17 +205,9 @@ class MainScreenAdapter(
         }
     }
 
-    inner class ScreenCarrouselViewHolder(private var binding: ListItemCarrouselBinding) :
+    inner class NothingFoundViewHolder(private var binding: NothingFoundBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(carrousel: ScreenItem.ScreenCarrousel) {
-            binding.carrousel.adapter = carrousel.adapter
-            binding.viewPageIndicator.setUpWithViewPager2(binding.carrousel)
-            binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
-        }
-    }
-
-    inner class NothingFoundViewHolder(private var binding: NothingFoundBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(){}
+        fun bind() {}
     }
 
 }

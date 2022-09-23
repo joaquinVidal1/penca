@@ -10,4 +10,7 @@
     <string name="played_with_no_result">Jugado s/resultado</string>
     <string name="see_details_text" tools:ignore="ExtraTranslation">Ver detalles</string>
     <string name="nothing_found">No se encontró nada!</string>
+    <string name="confirm">Confrimar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="dialog_title">Goles</string>
 </resources>

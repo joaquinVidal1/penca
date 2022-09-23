@@ -6,14 +6,105 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="16dp"
-        android:background="@color/color_background_app">
+        android:background="@color/color_background_app"
+        android:paddingBottom="16dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_list"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/carrousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.example.penca.mainscreen.ViewPagerIndicator
+                    android:id="@+id/view_page_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="@+id/carrousel"
+                    app:layout_constraintStart_toStartOf="@+id/carrousel"
+                    app:layout_constraintTop_toBottomOf="@id/carrousel"
+                    tools:background="@color/color_background_app"
+                    tools:layout_height="20dp"
+                    tools:layout_width="100dp" />
+
+                <TextView
+                    android:id="@+id/header_text_match"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/lato"
+                    android:text="@string/matchs"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_page_indicator" />
+
+                <EditText
+                    android:id="@+id/itemSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/background_search"
+                    android:fontFamily="@font/nunito_sans"
+                    android:hint="@string/search"
+                    android:inputType="text"
+                    android:paddingStart="8dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="6dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/search_hint_color"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/filter_button"
+                    app:layout_constraintStart_toStartOf="@id/header_text_match"
+                    app:layout_constraintTop_toBottomOf="@id/header_text_match" />
+
+                <ImageButton
+                    android:id="@+id/filter_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@color/color_background_app"
+                    android:src="@drawable/filter_button"
+                    app:layout_constraintBottom_toBottomOf="@id/itemSearch"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/itemSearch"
+                    app:layout_constraintTop_toTopOf="@id/itemSearch" />
+
+                <ImageButton
+                    android:id="@+id/search_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/search_vector"
+                    app:layout_constraintBottom_toBottomOf="@id/itemSearch"
+                    app:layout_constraintEnd_toEndOf="@id/itemSearch"
+                    app:layout_constraintTop_toTopOf="@id/itemSearch" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_list"
+                    app:layout_constraintTop_toBottomOf="@id/itemSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

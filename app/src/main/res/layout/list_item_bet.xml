@@ -167,9 +167,7 @@
                 android:textColor="@color/see_details"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/final_score">
-            </Button>
-
+                app:layout_constraintTop_toBottomOf="@id/final_score"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

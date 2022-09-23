@@ -26,6 +26,7 @@
     <color name="color_background_bet_status_accerted">#00A362</color>
     <color name="color_background_bet_status_not_done">#A19F9D</color>
     <color name="color_background_bet_header_not_done">#606071</color>
+    <color name="color_background_see_details">#445492</color>
 
 
 </resources>

@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.penca.R
 import com.example.penca.domain.entities.*
+import com.example.penca.mainscreen.TeamKind
 import java.time.LocalDate
 import javax.inject.Inject
 
 class MatchRepository @Inject constructor() {
+
     val teamList: LiveData<List<Team>>
         get() = _teamsList
     private val _teamsList = MutableLiveData<List<Team>>(
@@ -22,22 +24,22 @@ class MatchRepository @Inject constructor() {
     private val matchList = listOf<Match>(
         Match(
             0,
-            _teamsList.value?.find { it.id ==0 }!!,
-            _teamsList.value?.find { it.id ==1 }!!,
+            _teamsList.value?.find { it.id == 0 }!!,
+            _teamsList.value?.find { it.id == 1 }!!,
             LocalDate.of(2022, 4, 26),
         ),
         Match(
             1,
-            _teamsList.value?.find { it.id ==2 }!!,
-            _teamsList.value?.find { it.id ==4 }!!,
+            _teamsList.value?.find { it.id == 2 }!!,
+            _teamsList.value?.find { it.id == 4 }!!,
             LocalDate.of(2022, 4, 26),
             goalsLocal = 1,
             goalsAway = 0
         ),
         Match(
             2,
-            _teamsList.value?.find { it.id ==0 }!!,
-            _teamsList.value?.find { it.id ==1 }!!,
+            _teamsList.value?.find { it.id == 0 }!!,
+            _teamsList.value?.find { it.id == 1 }!!,
             LocalDate.of(2022, 3, 23),
             3,
             1,
@@ -54,16 +56,16 @@ class MatchRepository @Inject constructor() {
         ),
         Match(
             3,
-            _teamsList.value?.find { it.id ==3 }!!,
-            _teamsList.value?.find { it.id ==1 }!!,
+            _teamsList.value?.find { it.id == 3 }!!,
+            _teamsList.value?.find { it.id == 1 }!!,
             LocalDate.of(2022, 4, 25),
             2,
             0
         ),
         Match(
             4,
-            _teamsList.value?.find { it.id ==3 }!!,
-            _teamsList.value?.find { it.id ==4 }!!,
+            _teamsList.value?.find { it.id == 3 }!!,
+            _teamsList.value?.find { it.id == 4 }!!,
             LocalDate.of(2022, 4, 25),
             0,
             0
@@ -80,4 +82,14 @@ class MatchRepository @Inject constructor() {
     )
     val betList: LiveData<List<Bet>>
         get() = _betList
+
+    fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
+        betList.value?.find { it.match.id == matchId }?.apply {
+            if (teamKind == TeamKind.Local) {
+                homeGoalsBet = newScore
+            } else {
+                awayGoalsBet = newScore
+            }
+        }
+    }
 }
