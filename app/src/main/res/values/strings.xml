@@ -13,4 +13,5 @@
     <string name="confirm">Confrimar</string>
     <string name="cancel">Cancelar</string>
     <string name="dialog_title">Goles</string>
+    <string name="see_details">Ver detalles</string>
 </resources>

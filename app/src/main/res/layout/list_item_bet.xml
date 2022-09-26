@@ -6,9 +6,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_list_item_bet"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/border_list_item_bet"
         android:padding="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,9 +38,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/entire_bet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_list_item_bet_body"
+            android:background="@drawable/background_list_item_bet_body_pending"
             app:layout_constraintStart_toStartOf="@id/header_bet"
             app:layout_constraintTop_toBottomOf="@id/header_bet">
 
@@ -153,21 +154,22 @@
                 app:layout_constraintStart_toStartOf="@id/user_score"
                 app:layout_constraintTop_toBottomOf="@id/user_score" />
 
-            <Button
+            <TextView
                 android:id="@+id/see_details_button"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@drawable/background_see_details_button"
-                android:fontFamily="@font/lato"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:padding="8dp"
+                android:background="@drawable/background_see_details_button"
                 android:drawableEnd="@drawable/see_details_vector"
-                android:text="Ver detalles"
+                android:fontFamily="@font/lato"
+                android:text="@string/see_details"
+                android:textAlignment="center"
                 android:textAllCaps="false"
+                android:padding="8dp"
                 android:textColor="@color/see_details"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/final_score"/>
+                app:layout_constraintTop_toBottomOf="@id/final_score" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

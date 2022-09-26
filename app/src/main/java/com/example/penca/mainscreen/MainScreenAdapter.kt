@@ -103,6 +103,11 @@ class MainScreenAdapter(
                         R.color.color_background_bet_body
                     )
                 )
+                binding.entireBetBody.background =
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.background_list_item_bet_body_played
+                    )
                 binding.seeDetailsButton.visibility = View.VISIBLE
                 binding.seeDetailsButton.setOnClickListener { onSeeDetailsClicked(bet) }
                 val finalScoreText =
@@ -196,6 +201,11 @@ class MainScreenAdapter(
             binding.localTeamScoreBet.setOnClickListener { onEditLocalResult(bet) }
             binding.awayTeamScoreBet.setOnClickListener { onEditAwayResult(bet) }
             binding.seeDetailsButton.visibility = View.GONE
+            binding.entireBetBody.background =
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.background_list_item_bet_body_pending
+                )
         }
     }
 

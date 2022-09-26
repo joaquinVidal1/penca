@@ -8,7 +8,7 @@
             <stroke
                 android:width="1dp"
                 android:color="@color/color_bet_border" />
-            <solid android:color="@color/color_background_bet_body" />
+            <solid android:color="@color/color_background_app" />
             <corners android:topLeftRadius="0.1dp" android:topRightRadius="0.1dp"
                 android:bottomLeftRadius="10dp" android:bottomRightRadius="10dp"/>
         </shape>
