@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filter_options_array">
+        <item>Ver todo</item>
+        <item>Ver acertados</item>
+        <item>Ver errados</item>
+        <item>Ver pendientes</item>
+        <item>Ver jugados s/resultado</item>
+    </string-array>
+</resources>

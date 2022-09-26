@@ -92,4 +92,8 @@ class MatchRepository @Inject constructor() {
             }
         }
     }
+
+    fun getBetByMatchId(matchId: Int): Bet? {
+        return betList.value?.find { bet -> bet.match.id == matchId }
+    }
 }

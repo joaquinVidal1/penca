@@ -103,10 +103,11 @@ class MainScreenAdapter(
                         R.color.color_background_bet_body
                     )
                 )
-
                 binding.seeDetailsButton.visibility = View.VISIBLE
-                binding.finalScore.text =
+                binding.seeDetailsButton.setOnClickListener { onSeeDetailsClicked(bet) }
+                val finalScoreText =
                     bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
+                binding.finalScore.text = finalScoreText
                 if (bet.status == BetStatus.Done) {
                     binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
                     binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
@@ -205,7 +206,7 @@ class MainScreenAdapter(
         }
     }
 
-    inner class NothingFoundViewHolder(private var binding: NothingFoundBinding) :
+    inner class NothingFoundViewHolder(binding: NothingFoundBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind() {}
     }

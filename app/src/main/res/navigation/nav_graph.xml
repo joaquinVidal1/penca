@@ -8,13 +8,23 @@
         android:id="@+id/fragment_main_screen"
         android:name="com.example.penca.mainscreen.MainScreenFragment"
         android:label="fragment_main_screen"
-        tools:layout="@layout/fragment_main_screen" >
+        tools:layout="@layout/fragment_main_screen">
         <action
             android:id="@+id/action_fragment_main_screen_to_seeDetailsFragment2"
-            app:destination="@id/seeDetailsFragment" />
+            app:destination="@id/seeDetailsFragment">
+            <argument
+                android:name="matchId"
+                app:argType="integer"/>
+        </action>
+
     </fragment>
     <fragment
         android:id="@+id/seeDetailsFragment"
-        android:name="com.example.penca.seedetailsfragment.SeeDetailsFragment"
-        android:label="SeeDetailsFragment" />
+        android:name="com.example.penca.seedetails.SeeDetailsFragment"
+        android:label="SeeDetailsFragment">
+        <argument
+            android:name="matchId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
 </navigation>

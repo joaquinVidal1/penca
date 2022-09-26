@@ -1,8 +1,6 @@
 package com.example.penca.domain.entities
 
-import android.media.Image
 import java.time.LocalDate
-import java.util.*
 
 enum class MatchStatus {
     Played,
@@ -19,9 +17,9 @@ data class Match(
     val events: List<MatchEvent>? = null
 ) {
     val status
-        get() = if (date < LocalDate.now()){
+        get() = if (date < LocalDate.now()) {
             MatchStatus.Played
-        }else{
+        } else {
             MatchStatus.Pending
         }
 }

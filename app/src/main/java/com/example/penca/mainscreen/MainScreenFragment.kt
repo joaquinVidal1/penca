@@ -2,19 +2,21 @@ package com.example.penca.mainscreen
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.NumberPicker
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.penca.R
@@ -22,6 +24,8 @@ import com.example.penca.databinding.FragmentMainScreenBinding
 import com.example.penca.domain.entities.Bet
 import com.example.penca.domain.entities.ScreenItem
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.stream.Collectors.toList
+
 
 @AndroidEntryPoint
 class MainScreenFragment : Fragment() {
@@ -33,25 +37,36 @@ class MainScreenFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main_screen, container, false
         )
 
         adapter = MainScreenAdapter(requireContext(), ArrayList(),
-            { bet -> setDialog(bet, TeamKind.Local) },
-            { bet -> setDialog(bet, TeamKind.Away) },
-            { bet -> onSeeDetailsClicked(bet)})
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Local) },
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
+            { bet ->
+                this.findNavController().navigate(
+                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
+                )
+            })
 
         binding.recyclerList.adapter = adapter
+        binding.filterButton.setOnClickListener { setFilterDialog() }
         return binding.root
     }
 
-    private fun onSeeDetailsClicked(bet: Bet) {
-
+    private fun setFilterDialog() {
+        val values = resources.getStringArray(R.array.filter_options_array)
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Filtrar partidos")
+        builder.setItems(values, DialogInterface.OnClickListener { dialog, which ->
+            viewModel.onFilterChanged(BetFilter.values().toList()[which])
+        })
+        builder.show()
     }
 
-    private fun setDialog(bet: Bet, teamKind: TeamKind) {
+    private fun setNumberPickerForBetGoals(bet: Bet, teamKind: TeamKind) {
         val builder = AlertDialog.Builder(context)
         val numberPicker = NumberPicker(context)
         numberPicker.minValue = 0
@@ -94,7 +109,7 @@ class MainScreenFragment : Fragment() {
 
         viewModel.bets.observe(viewLifecycleOwner) {
             val screenList = mutableListOf<ScreenItem>()
-            if (it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 screenList.add(ScreenItem.ScreenNothingFound())
             } else {
                 screenList.addAll(it)
