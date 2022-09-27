@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        actionBar?.setDisplayShowTitleEnabled(false)
         navController = findNavController(R.id.nav_host_fragment)
         toolbar.setupWithNavController(navController)
     }
@@ -35,7 +36,11 @@ class MainActivity : AppCompatActivity() {
         val pencaText = toolbar.findViewById<TextView>(R.id.pencaText)
         val logoImage = toolbar.findViewById<ImageView>(R.id.logoImage)
         val detailsText = toolbar.findViewById<TextView>(R.id.see_details_text)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        actionBar?.setDisplayShowTitleEnabled(false)
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            actionBar?.setDisplayShowTitleEnabled(false)
             if (destination.id == R.id.seeDetailsFragment) {
                 toolbar.setNavigationIcon(R.drawable.back_vector)
                 pencaText.visibility = View.INVISIBLE

@@ -13,6 +13,8 @@
             android:id="@+id/action_fragment_main_screen_to_seeDetailsFragment2"
             app:destination="@id/seeDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/out_from_right"
             app:popEnterAnim="@anim/in_from_left">
             <argument
                 android:name="matchId"
