@@ -25,31 +25,18 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageButton
-                        android:id="@+id/backButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="34dp"
-                        android:layout_marginStart="10dp"
-                        android:padding="7dp"
-                        android:background="@color/action_bar_background"
-                        android:src="@drawable/back_vector"
-                        android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/logoImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="25dp"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/penca_logo"
-                        app:layout_constraintBottom_toBottomOf="@id/backButton"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/pencaText"
-                        app:layout_constraintTop_toTopOf="@id/backButton" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/pencaText"
@@ -60,10 +47,10 @@
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/backButton"
+                        app:layout_constraintBottom_toBottomOf="@id/logoImage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/backButton" />
+                        app:layout_constraintTop_toTopOf="@id/logoImage" />
 
                     <TextView
                         android:id="@+id/see_details_text"
@@ -74,11 +61,10 @@
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@id/backButton"
+                        app:layout_constraintBottom_toBottomOf="@id/logoImage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/backButton" />
+                        app:layout_constraintTop_toTopOf="@id/logoImage" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

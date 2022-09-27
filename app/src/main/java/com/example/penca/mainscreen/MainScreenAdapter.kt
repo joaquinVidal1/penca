@@ -89,8 +89,18 @@ class MainScreenAdapter(
             binding.nameLocalTeam.text = bet.match.homeTeam.name
             binding.imageAwayTeam.setImageResource(bet.match.awayTeam.image)
             binding.nameAwayTeam.text = bet.match.awayTeam.name
-            binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
-            binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
+            binding.localTeamScoreBet.text =
+                if (bet.homeGoalsBet == null) {
+                    "   "
+                } else {
+                    bet.homeGoalsBet.toString()
+                }
+            binding.awayTeamScoreBet.text =
+                if (bet.awayGoalsBet == null) {
+                    "   "
+                } else {
+                    bet.awayGoalsBet.toString()
+                }
             if (bet.match.status == MatchStatus.Pending) {
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
             } else {
@@ -100,7 +110,7 @@ class MainScreenAdapter(
                 binding.userScore.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
-                        R.color.color_background_bet_body
+                        R.color.color_background_app
                     )
                 )
                 binding.entireBetBody.background =
@@ -170,8 +180,6 @@ class MainScreenAdapter(
                     context,
                     R.drawable.background_list_item_bet_header_wrong
                 )
-
-
         }
 
         private fun bindPendingMatch(

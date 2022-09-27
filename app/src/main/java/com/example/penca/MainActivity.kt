@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,33 +28,23 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         navController = findNavController(R.id.nav_host_fragment)
-        toolbar.setupWithNavController(
-            navController, AppBarConfiguration(
-                setOf(
-                    R.id.fragment_main_screen,
-                    R.id.seeDetailsFragment
-                )
-            )
-        )
+        toolbar.setupWithNavController(navController)
     }
 
     private fun modifyToolbar() {
         val pencaText = toolbar.findViewById<TextView>(R.id.pencaText)
         val logoImage = toolbar.findViewById<ImageView>(R.id.logoImage)
-        val backButton = toolbar.findViewById<ImageView>(R.id.backButton)
         val detailsText = toolbar.findViewById<TextView>(R.id.see_details_text)
-        navController.addOnDestinationChangedListener { controller, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.seeDetailsFragment) {
+                toolbar.setNavigationIcon(R.drawable.back_vector)
                 pencaText.visibility = View.INVISIBLE
                 logoImage.visibility = View.INVISIBLE
-                backButton.visibility = View.VISIBLE
                 detailsText.visibility = View.VISIBLE
-                backButton.setOnClickListener { controller.popBackStack() }
             } else {
                 if (destination.id == R.id.fragment_main_screen) {
                     pencaText.visibility = View.VISIBLE
                     logoImage.visibility = View.VISIBLE
-                    backButton.visibility = View.INVISIBLE
                     detailsText.visibility = View.INVISIBLE
                 }
             }

@@ -11,7 +11,9 @@
         tools:layout="@layout/fragment_main_screen">
         <action
             android:id="@+id/action_fragment_main_screen_to_seeDetailsFragment2"
-            app:destination="@id/seeDetailsFragment">
+            app:destination="@id/seeDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/in_from_left">
             <argument
                 android:name="matchId"
                 app:argType="integer"/>

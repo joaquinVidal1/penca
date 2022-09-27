@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/drawable/backgroun_list_item_bet_header.xml" value="0.204" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_body.xml" value="0.2855" />
+        <entry key="app/src/main/res/drawable/background_list_item_bet_body_pending.xml" value="0.1295" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_body_played.xml" value="0.2115" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_header.xml" value="0.204" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_header_correct.xml" value="0.102" />
@@ -24,11 +25,11 @@
         <entry key="app/src/main/res/drawable/list_item_status_box_not_done.xml" value="0.188" />
         <entry key="app/src/main/res/drawable/penarol_cerrito_banner_image.xml" value="0.185" />
         <entry key="app/src/main/res/drawable/penarol_vs_cerrito.xml" value="0.1425" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5639880952380952" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_feature_carrousel_page.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_main_screen.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_see_details.xml" value="0.4058709546239552" />
-        <entry key="app/src/main/res/layout/list_item_bet.xml" value="0.4611973392461197" />
+        <entry key="app/src/main/res/layout/list_item_bet.xml" value="1.1214872534397184" />
         <entry key="app/src/main/res/layout/list_item_carrousel.xml" value="0.49607329842931935" />
         <entry key="app/src/main/res/layout/list_item_details_match.xml" value="0.402321083172147" />
         <entry key="app/src/main/res/layout/list_item_header_main_screen.xml" value="0.1" />

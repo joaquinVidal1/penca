@@ -49,9 +49,9 @@
                 android:id="@+id/image_local_team"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/escudo_penarol"
+                app:layout_constraintEnd_toStartOf="@id/user_score"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,10 +73,10 @@
                 android:id="@+id/image_away_team"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
                 android:src="@drawable/escudo_nacional"
                 app:layout_constraintBottom_toBottomOf="@id/image_local_team"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/user_score"
                 app:layout_constraintTop_toTopOf="@id/image_local_team" />
 
             <TextView
@@ -92,27 +92,27 @@
                 app:layout_constraintStart_toStartOf="@id/image_away_team"
                 app:layout_constraintTop_toTopOf="@id/name_local_team" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/user_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_score"
-                android:paddingHorizontal="28dp"
-                android:paddingVertical="9dp"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="@id/name_local_team"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/local_team_score_bet"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingVertical="9dp"
+                    android:paddingStart="28dp"
                     android:fontFamily="@font/lato"
                     android:text="1"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/score_team_score"
@@ -121,26 +121,25 @@
                     android:layout_marginStart="6dp"
                     android:fontFamily="@font/lato"
                     android:text="-"
+                    android:paddingVertical="9dp"
+                    android:layout_weight="0"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="@id/local_team_score_bet"
-                    app:layout_constraintStart_toEndOf="@id/local_team_score_bet"
-                    app:layout_constraintTop_toTopOf="@id/local_team_score_bet" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/away_team_score_bet"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="9dp"
+                    android:paddingEnd="28dp"
                     android:fontFamily="@font/lato"
                     android:text="0"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="@id/local_team_score_bet"
-                    app:layout_constraintStart_toEndOf="@id/score_team_score"
-                    app:layout_constraintTop_toTopOf="@id/local_team_score_bet" />
+                    android:textSize="24sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/final_score"
@@ -162,10 +161,10 @@
                 android:background="@drawable/background_see_details_button"
                 android:drawableEnd="@drawable/see_details_vector"
                 android:fontFamily="@font/lato"
+                android:padding="8dp"
                 android:text="@string/see_details"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:padding="8dp"
                 android:textColor="@color/see_details"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"

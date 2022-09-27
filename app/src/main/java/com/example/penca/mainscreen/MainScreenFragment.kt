@@ -2,7 +2,6 @@ package com.example.penca.mainscreen
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,7 +23,6 @@ import com.example.penca.databinding.FragmentMainScreenBinding
 import com.example.penca.domain.entities.Bet
 import com.example.penca.domain.entities.ScreenItem
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.stream.Collectors.toList
 
 
 @AndroidEntryPoint
@@ -41,18 +39,6 @@ class MainScreenFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main_screen, container, false
         )
-
-        adapter = MainScreenAdapter(requireContext(), ArrayList(),
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Local) },
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
-            { bet ->
-                this.findNavController().navigate(
-                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
-                )
-            })
-
-        binding.recyclerList.adapter = adapter
-        binding.filterButton.setOnClickListener { setFilterDialog() }
         return binding.root
     }
 
@@ -60,9 +46,9 @@ class MainScreenFragment : Fragment() {
         val values = resources.getStringArray(R.array.filter_options_array)
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Filtrar partidos")
-        builder.setItems(values, DialogInterface.OnClickListener { dialog, which ->
+        builder.setItems(values) { _, which ->
             viewModel.onFilterChanged(BetFilter.values().toList()[which])
-        })
+        }
         builder.show()
     }
 
@@ -70,8 +56,8 @@ class MainScreenFragment : Fragment() {
         val builder = AlertDialog.Builder(context)
         val numberPicker = NumberPicker(context)
         numberPicker.minValue = 0
-        numberPicker.maxValue = 500
-        numberPicker.wrapSelectorWheel = false
+        numberPicker.maxValue = 9
+        numberPicker.wrapSelectorWheel = true
         numberPicker.value = if (teamKind == TeamKind.Local) {
             bet.homeGoalsBet ?: 0
         } else {
@@ -100,7 +86,17 @@ class MainScreenFragment : Fragment() {
         val carrousel = binding.carrousel
         val viewPageIndicator = binding.viewPageIndicator
         val itemSearch = binding.itemSearch
+        adapter = MainScreenAdapter(requireContext(), ArrayList(),
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Local) },
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
+            { bet ->
+                this.findNavController().navigate(
+                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
+                )
+            })
 
+        binding.recyclerList.adapter = adapter
+        binding.filterButton.setOnClickListener { setFilterDialog() }
         mainScreenList.layoutManager = manager
 
         carrousel.adapter = carrouselAdapter
