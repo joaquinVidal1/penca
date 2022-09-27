@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.DayNight">
+        <item name="textColorAlertDialogListItem">#FF453A</item>
+        <item name="android:textColor">#0A84FF</item>
+        <item name="fontFamily">@font/lato</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+</resources>

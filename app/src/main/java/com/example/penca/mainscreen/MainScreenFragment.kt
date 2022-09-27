@@ -44,7 +44,7 @@ class MainScreenFragment : Fragment() {
 
     private fun setFilterDialog() {
         val values = resources.getStringArray(R.array.filter_options_array)
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context, R.style.AlertDialogCustom)
         builder.setTitle("Filtrar partidos")
         builder.setItems(values) { _, which ->
             viewModel.onFilterChanged(BetFilter.values().toList()[which])

@@ -14,4 +14,9 @@
     <string name="cancel">Cancelar</string>
     <string name="dialog_title">Goles</string>
     <string name="see_details">Ver detalles</string>
+    <string name="match_filter">Filtrar partidos</string>
+    <string name="see_all">Ver todos</string>
+    <string name="see_accerted">Ver acertados</string>
+    <string name="see_wrong">Ver errados</string>
+    <string name="see_played_not_bet">Ver jugados s/resultado</string>
 </resources>

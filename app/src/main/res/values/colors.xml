@@ -27,6 +27,10 @@
     <color name="color_background_bet_status_not_done">#A19F9D</color>
     <color name="color_background_bet_header_not_done">#606071</color>
     <color name="color_background_see_details">#445492</color>
-
+    <color name="color_background_dialog">#262C3F</color>
+    <color name="color_text_dialog_not_selected">#0A84FF</color>
+    <color name="color_text_dialog_selected">#FF453A</color>
+    <color name="color_title_dialog">#9C9EAB</color>
+    <color name="color_dialog_separator">#44464F</color>
 
 </resources>
