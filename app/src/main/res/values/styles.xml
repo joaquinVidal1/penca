@@ -6,4 +6,9 @@
         <item name="fontFamily">@font/lato</item>
         <item name="android:textSize">20sp</item>
     </style>
+
+    <style name="DialogStyle" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+    </style>
 </resources>

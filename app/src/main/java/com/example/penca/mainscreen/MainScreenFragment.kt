@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.NumberPicker
 import androidx.databinding.DataBindingUtil
@@ -43,13 +40,13 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun setFilterDialog() {
-        val values = resources.getStringArray(R.array.filter_options_array)
-        val builder = AlertDialog.Builder(context, R.style.AlertDialogCustom)
-        builder.setTitle("Filtrar partidos")
-        builder.setItems(values) { _, which ->
-            viewModel.onFilterChanged(BetFilter.values().toList()[which])
+        val dialog = viewModel.filter.value?.let {
+            FilterDialog(it) { filter: BetFilter ->
+                viewModel.onFilterChanged(filter)
+            }
         }
-        builder.show()
+        dialog!!.show(childFragmentManager, "Filter dialog")
+
     }
 
     private fun setNumberPickerForBetGoals(bet: Bet, teamKind: TeamKind) {

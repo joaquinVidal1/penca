@@ -32,5 +32,6 @@
     <color name="color_text_dialog_selected">#FF453A</color>
     <color name="color_title_dialog">#9C9EAB</color>
     <color name="color_dialog_separator">#44464F</color>
+    <color name="color_background_dialog_confirm_button">#1C1C1E</color>
 
 </resources>

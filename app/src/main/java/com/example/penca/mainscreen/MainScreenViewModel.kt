@@ -41,6 +41,8 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     val bets = MediatorLiveData<List<ScreenItem>>()
     private val nonFilteredBets = Transformations.map(repository.betList) { it }
     private val _filter = MutableLiveData(BetFilter.SeeAll)
+    val filter: LiveData<BetFilter>
+        get() = _filter
 
     init {
         bets.addSource(_filter) { filter ->
