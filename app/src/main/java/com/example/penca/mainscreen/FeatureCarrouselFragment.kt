@@ -13,8 +13,6 @@ import com.example.penca.databinding.FragmentFeatureCarrouselPageBinding
 class FeatureCarrouselFragment : Fragment() {
     companion object {
         const val ARG_DRAWABLE_ID = "arg_drawable_id"
-        const val ARG_TITLE = "arg_title"
-        const val ARG_DESCRIPTION = "arg_descriprion"
     }
 
     lateinit var binding: FragmentFeatureCarrouselPageBinding
@@ -42,12 +40,7 @@ class FeatureCarrouselFragment : Fragment() {
                 )
             )
         }
-//        arguments?.takeIf { it.containsKey(ARG_TITLE) }?.apply {
-//            binding.mainText.text = getString(ARG_TITLE)
-//        }
-//        arguments?.takeIf { it.containsKey(ARG_DESCRIPTION) }?.apply {
-//            binding.descriptionText.text = getString(ARG_DESCRIPTION)
-//        }
+
     }
 
 }

@@ -10,9 +10,7 @@ import javax.inject.Inject
 
 class MatchRepository @Inject constructor() {
 
-    val teamList: LiveData<List<Team>>
-        get() = _teamsList
-    private val _teamsList = MutableLiveData<List<Team>>(
+    private val _teamsList = MutableLiveData(
         listOf(
             Team(0, "Peñarol", R.drawable.escudo_penarol),
             Team(1, "Nacional", R.drawable.escudo_nacional),
@@ -21,7 +19,7 @@ class MatchRepository @Inject constructor() {
             Team(4, "Boston River", R.drawable.escudo_boston_river)
         )
     )
-    private val matchList = listOf<Match>(
+    private val matchList = listOf(
         Match(
             0,
             _teamsList.value?.find { it.id == 0 }!!,
@@ -71,7 +69,7 @@ class MatchRepository @Inject constructor() {
             0
         )
     )
-    private val _betList = MutableLiveData<List<Bet>>(
+    private val _betList = MutableLiveData(
         listOf(
             Bet(matchList.find { it.id == 0 }!!, BetStatus.Pending, 1, 0),
             Bet(matchList.find { it.id == 1 }!!, BetStatus.Done, 1, 0),

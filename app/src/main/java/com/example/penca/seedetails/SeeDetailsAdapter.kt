@@ -11,7 +11,7 @@ import com.example.penca.domain.entities.MatchEvent
 import com.example.penca.domain.entities.MatchEventKind
 import com.example.penca.domain.entities.MatchTeams
 
-class SeeDetailsAdapter(var eventsList: List<MatchEvent>) :
+class SeeDetailsAdapter(private var eventsList: List<MatchEvent>) :
     RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return MatchEventViewHolder(

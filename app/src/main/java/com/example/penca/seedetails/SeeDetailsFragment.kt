@@ -41,70 +41,66 @@ class SeeDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (bet == null) {
+        if (bet.match.events == null) {
             binding.matchEvents.visibility = View.INVISIBLE
             binding.nothingFoundText.visibility = View.VISIBLE
         } else {
-            if (bet.match.events == null) {
-                binding.matchEvents.visibility = View.INVISIBLE
-                binding.nothingFoundText.visibility = View.VISIBLE
-            } else {
-                binding.matchEvents.layoutManager = manager
-                binding.matchEvents.visibility = View.VISIBLE
-                binding.nothingFoundText.visibility = View.INVISIBLE
-                adapter = SeeDetailsAdapter(bet.match.events!!)
-                binding.matchEvents.adapter = adapter
-                (binding.matchEvents.adapter as SeeDetailsAdapter).notifyDataSetChanged()
-            }
-            binding.awayTeamImage.setImageResource(bet.match.awayTeam.image)
-            binding.homeTeamImage.setImageResource(bet.match.homeTeam.image)
-            binding.awayTeamName.text = bet.match.awayTeam.name
-            binding.homeTeamName.text = bet.match.homeTeam.name
-            binding.matchResult.text =
-                bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
-            binding.dateText.text = getHeaderText(bet.match.date)
-            val statusText = binding.statusText
-            if (bet.status == BetStatus.Pending) {
-                statusText.text = context!!.getString(R.string.played_with_no_result)
+            binding.matchEvents.layoutManager = manager
+            binding.matchEvents.visibility = View.VISIBLE
+            binding.nothingFoundText.visibility = View.INVISIBLE
+            adapter = SeeDetailsAdapter(bet.match.events!!)
+            binding.matchEvents.adapter = adapter
+            (binding.matchEvents.adapter as SeeDetailsAdapter).notifyDataSetChanged()
+        }
+        binding.awayTeamImage.setImageResource(bet.match.awayTeam.image)
+        binding.homeTeamImage.setImageResource(bet.match.homeTeam.image)
+        binding.awayTeamName.text = bet.match.awayTeam.name
+        binding.homeTeamName.text = bet.match.homeTeam.name
+        binding.matchResult.text =
+            bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
+        binding.dateText.text = getHeaderText(bet.match.date)
+        val statusText = binding.statusText
+        if (bet.status == BetStatus.Pending) {
+            statusText.text = context!!.getString(R.string.played_with_no_result)
+            statusText.background =
+                ContextCompat.getDrawable(
+                    context!!,
+                    R.drawable.list_item_status_box_not_done
+                )
+            binding.dateText.background =
+                ContextCompat.getDrawable(
+                    context!!,
+                    R.color.color_background_bet_header_not_done
+                )
+
+        } else {
+            if (bet.result == BetResult.Wrong) {
+                statusText.text = context!!.getString(R.string.missed)
                 statusText.background =
                     ContextCompat.getDrawable(
                         context!!,
-                        R.drawable.list_item_status_box_not_done
+                        R.drawable.list_item_status_box_incorrect
                     )
                 binding.dateText.background =
                     ContextCompat.getDrawable(
                         context!!,
-                        R.color.color_background_bet_header_not_done
+                        R.color.color_background_bet_header_missed
+                    )
+            } else {
+                statusText.text = context!!.getString(R.string.accerted)
+                statusText.background =
+                    ContextCompat.getDrawable(
+                        context!!,
+                        R.drawable.list_item_status_box_correct
                     )
 
-            } else {
-                if (bet.result == BetResult.Wrong) {
-                    statusText.text = context!!.getString(R.string.missed)
-                    statusText.background =
-                        ContextCompat.getDrawable(
-                            context!!,
-                            R.drawable.list_item_status_box_incorrect
-                        )
-                    binding.dateText.background =
-                        ContextCompat.getDrawable(
-                            context!!,
-                            R.color.color_background_bet_header_missed
-                        )
-                } else {
-                    statusText.text = context!!.getString(R.string.accerted)
-                    statusText.background =
-                        ContextCompat.getDrawable(
-                            context!!,
-                            R.drawable.list_item_status_box_correct
-                        )
-
-                    binding.dateText.background =
-                        ContextCompat.getDrawable(
-                            context!!,
-                            R.color.color_background_bet_header_accerted
-                        )
-                }
+                binding.dateText.background =
+                    ContextCompat.getDrawable(
+                        context!!,
+                        R.color.color_background_bet_header_accerted
+                    )
             }
         }
     }
+
 }

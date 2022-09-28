@@ -1,7 +1,7 @@
 package com.example.penca.domain.entities
 
 
-enum class BetResult() {
+enum class BetResult {
     Right,
     Wrong
 }

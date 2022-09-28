@@ -7,7 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SeeDetailsViewModel @Inject constructor (private val repository: MatchRepository) : ViewModel() {
+class SeeDetailsViewModel @Inject constructor(private val repository: MatchRepository) :
+    ViewModel() {
     fun getBetByMatchId(matchId: Int): Bet? {
         return repository.getBetByMatchId(matchId)
     }

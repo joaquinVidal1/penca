@@ -13,12 +13,12 @@ enum class TeamKind {
     Away
 }
 
-enum class BetFilter(val pos: Int) {
-    SeeAll(0),
-    SeeAccerted(1),
-    SeeMissed(2),
-    SeePending(3),
-    SeePlayedWithNoResult(4);
+enum class BetFilter {
+    SeeAll,
+    SeeAccerted,
+    SeeMissed,
+    SeePending,
+    SeePlayedWithNoResult;
 
     companion object {
         fun getBetStatusResultAndMatchStatus(betFilter: BetFilter): Triple<BetStatus?, BetResult?, MatchStatus?> {
@@ -47,7 +47,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     init {
         bets.addSource(_filter) { filter ->
             bets.value = getScreenList(nonFilteredBets.value?.let { betList ->
-                filterBySelection(betList, filter)?.let { it1 ->
+                filterBySelection(betList, filter).let { it1 ->
                     _query.value?.let { it2 ->
                         filterByQuery(
                             it1, it2
@@ -59,7 +59,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         bets.addSource(nonFilteredBets) { betList ->
             bets.value = getScreenList(betList.let { it1 ->
                 _filter.value?.let {
-                    filterBySelection(it1, it)?.let { it1 ->
+                    filterBySelection(it1, it).let { it1 ->
                         _query.value?.let { it2 ->
                             filterByQuery(
                                 it1, it2
@@ -70,19 +70,26 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
             })
         }
         bets.addSource(_query) { query ->
-            bets.value = getScreenList(nonFilteredBets.value?.let { _filter.value?.let { it1 -> filterBySelection(it, it1) } }
+            bets.value = getScreenList(nonFilteredBets.value?.let {
+                _filter.value?.let { it1 ->
+                    filterBySelection(
+                        it,
+                        it1
+                    )
+                }
+            }
                 ?.let { filterByQuery(it, query) })
         }
     }
 
-    private fun filterByQuery(betsToFilter: List<Bet>, query: String): List<Bet>? {
+    private fun filterByQuery(betsToFilter: List<Bet>, query: String): List<Bet> {
         return betsToFilter.filter {
             it.match.homeTeam.name.lowercase()
                 .contains(query) || it.match.awayTeam.name.lowercase().contains(query)
         }
     }
 
-    private fun filterBySelection(betsToFilter: List<Bet>, filter: BetFilter): List<Bet>? {
+    private fun filterBySelection(betsToFilter: List<Bet>, filter: BetFilter): List<Bet> {
         return betsToFilter.filter { bet ->
             val betFilter = getBetStatusResultAndMatchStatus(filter)
             if (betFilter == Triple(null, null, null)) {

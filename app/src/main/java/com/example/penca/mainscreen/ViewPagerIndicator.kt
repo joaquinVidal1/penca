@@ -11,8 +11,6 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.penca.R
 
@@ -41,22 +39,6 @@ class ViewPagerIndicator @JvmOverloads constructor(
     private val iconUnselected: Drawable?
     private var indicatorMargin: Int = 0
     private var indicatorColorTint: Int = 0
-
-    private val recyclerViewScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                val position =
-                    (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-
-                if (position == RecyclerView.NO_POSITION) {
-                    return
-                }
-
-                selectAt(position)
-            }
-        }
-    }
 
     init {
 
