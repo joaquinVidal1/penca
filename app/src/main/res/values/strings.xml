@@ -21,4 +21,15 @@
     <string name="see_played_not_bet">Ver jugados s/resultado</string>
     <string name="filter">Filtrar</string>
     <string name="see_pending">Ver pendientes</string>
+    <string name="log_in_title">Ingresar a tu cuenta</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="log_in">Ingresar</string>
+    <string name="dont_have_account">¿No tienes cuenta?</string>
+    <string name="register">Registrate</string>
+    <string name="already_account_text">¿Ya tienes una cuenta?</string>
+    <string name="create">Crear</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="invalid_email">Dirección de correo inválida</string>
+    <string name="must_enter_password">Debes ingresar una contraseña</string>
 </resources>

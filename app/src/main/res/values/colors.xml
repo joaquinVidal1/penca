@@ -33,5 +33,10 @@
     <color name="color_title_dialog">#9C9EAB</color>
     <color name="color_dialog_separator">#44464F</color>
     <color name="color_background_dialog_confirm_button">#1C1C1E</color>
+    <color name="grey_log_in">#C6C8CB</color>
+    <color name="color_background_log_in_input">#30343E</color>
+    <color name="color_input_log_in_border">#6D6F72</color>
+    <color name="color_background_log_in_button">#5175D1</color>
+    <color name="color_register_text">#EFD851</color>
 
 </resources>

@@ -1,10 +1,11 @@
 package com.example.penca
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -44,10 +45,17 @@ class MainActivity : AppCompatActivity() {
                 logoImage.visibility = View.INVISIBLE
                 detailsText.visibility = View.VISIBLE
             } else {
+                toolbar.navigationIcon = null
                 if (destination.id == R.id.fragment_main_screen) {
                     pencaText.visibility = View.VISIBLE
                     logoImage.visibility = View.VISIBLE
                     detailsText.visibility = View.INVISIBLE
+                }else{
+                    if (destination.id == R.id.logInFragment || destination.id == R.id.registerFragment){
+                        pencaText.visibility = View.VISIBLE
+                        logoImage.visibility = View.VISIBLE
+                        detailsText.visibility = View.INVISIBLE
+                    }
                 }
             }
         }

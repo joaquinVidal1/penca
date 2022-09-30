@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/background_dialog.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/background_dialog_confirm_button.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/background_dialog_last_button.xml" value="0.1295" />
+        <entry key="app/src/main/res/drawable/background_input_log_in.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_body.xml" value="0.2855" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_body_pending.xml" value="0.1295" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_body_played.xml" value="0.2115" />
@@ -16,6 +17,7 @@
         <entry key="app/src/main/res/drawable/background_list_item_bet_header_not_done.xml" value="0.102" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_header_pending.xml" value="0.188" />
         <entry key="app/src/main/res/drawable/background_list_item_bet_header_wrong.xml" value="0.102" />
+        <entry key="app/src/main/res/drawable/background_log_in_button.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/background_score.xml" value="0.229" />
         <entry key="app/src/main/res/drawable/background_search.xml" value="0.188" />
         <entry key="app/src/main/res/drawable/background_see_details_button.xml" value="0.112" />
@@ -33,7 +35,9 @@
         <entry key="app/src/main/res/layout/alert_dialog.xml" value="0.34846029173419774" />
         <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.32038269042968753" />
         <entry key="app/src/main/res/layout/fragment_feature_carrousel_page.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_log_in.xml" value="0.2968036529680365" />
         <entry key="app/src/main/res/layout/fragment_main_screen.xml" value="0.565472412109375" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.4620630861040068" />
         <entry key="app/src/main/res/layout/fragment_see_details.xml" value="0.4058709546239552" />
         <entry key="app/src/main/res/layout/list_item_bet.xml" value="0.5970736226446296" />
         <entry key="app/src/main/res/layout/list_item_carrousel.xml" value="0.49607329842931935" />
