@@ -16,11 +16,21 @@ import javax.inject.Inject
 class LogInViewModel @Inject constructor(private val repository: MatchRepository) :
     ViewModel() {
 
-    private val _logInResult = MutableLiveData<Boolean?>(null)
-    val logInResult: LiveData<Boolean?>
+    private val _showProgressBar = MutableLiveData<Boolean>(false)
+    val showProgressBar: LiveData<Boolean>
+        get() = _showProgressBar
+
+    private val _logInResult = MutableLiveData<String?>()
+    val logInResult: LiveData<String?>
         get() = _logInResult
 
-    fun logIn(email: String, password: String) =
-        viewModelScope.async { _logInResult.postValue(repository.logIn(email, password)) }
+    fun logIn(email: String, password: String) {
+        _showProgressBar.value = true
+        viewModelScope.launch { _logInResult.postValue(repository.logIn(email, password)) }
+    }
+
+    fun resultArrived(){
+        _showProgressBar.value = false
+    }
 
 }

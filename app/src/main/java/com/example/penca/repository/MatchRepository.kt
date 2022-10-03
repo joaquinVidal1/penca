@@ -1,15 +1,16 @@
 package com.example.penca.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.penca.R
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.TeamKind
-import com.example.penca.network.BaseProfileResponse
+import com.example.penca.network.NetworkUser
 import com.example.penca.network.UserNetwork
 import kotlinx.coroutines.*
-import java.lang.Exception
+import retrofit2.HttpException
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -18,6 +19,8 @@ class MatchRepository @Inject constructor() {
     private val _networkError = MutableLiveData(false)
     val networkError: LiveData<Boolean>
         get() = _networkError
+
+    private lateinit var loggedUser: NetworkUser
 
     private val _teamsList = MutableLiveData(
         listOf(
@@ -105,12 +108,39 @@ class MatchRepository @Inject constructor() {
     }
 
     suspend fun logIn(email: String, password: String) =
-        withContext(Dispatchers.IO){
-                when (UserNetwork.user.logIn(email, password)) {
-                    //is BaseProfileResponse.Success -> true
-                    //is BaseProfileResponse.ErrorResponse -> false
-                    else -> {true}
-                }
+        withContext(Dispatchers.IO) {
+            try {
+                loggedUser = UserNetwork.user.logIn(email, password)
+                null
+            } catch (e: HttpException) {
+                val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
+                Log.e(
+                    "http exception",
+                    errorResponse.toString()
+                )
+                getMessage(errorResponse)
+            }
         }
+
+    private fun getMessage(errorResponse: String?): String {
+        return errorResponse?.replace("{\"message\":\"", "")?.replace("\"}", "") ?: "error"
+
+    }
+
+    suspend fun register(email: String, password: String) =
+        withContext(Dispatchers.IO) {
+            try {
+                loggedUser = UserNetwork.user.register(email, password)
+                null
+            } catch (e: HttpException) {
+                val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
+                Log.e(
+                    "http exception",
+                    errorResponse.toString()
+                )
+                getMessage(errorResponse)
+            }
+        }
+
 
 }
