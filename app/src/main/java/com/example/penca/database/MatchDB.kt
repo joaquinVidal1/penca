@@ -13,7 +13,7 @@ class MatchDB(
     @PrimaryKey
     val matchId: Int,
     val homeTeamId: Int,
-    val hoomeTeamName: String,
+    val homeTeamName: String,
     val homeTeamLogo: Int,
     val awayTeamId: Int,
     val awayTeamName: String,

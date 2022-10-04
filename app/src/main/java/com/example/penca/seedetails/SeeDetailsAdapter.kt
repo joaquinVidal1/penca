@@ -51,7 +51,7 @@ class SeeDetailsAdapter(private var eventsList: List<MatchEvent>) :
                     }
                 }
             )
-            if (event.team == MatchTeams.Local) {
+            if (event.team == MatchTeams.Home) {
                 binding.nameAwayPlayer.visibility = View.INVISIBLE
                 binding.nameHomePlayer.visibility = View.VISIBLE
                 binding.nameHomePlayer.text = event.playerName

@@ -49,32 +49,6 @@ class MainScreenFragment : Fragment() {
 
     }
 
-    private fun setNumberPickerForBetGoals(bet: Bet, teamKind: TeamKind) {
-        val builder = AlertDialog.Builder(context)
-        val numberPicker = NumberPicker(context)
-        numberPicker.minValue = 0
-        numberPicker.maxValue = 9
-        numberPicker.wrapSelectorWheel = true
-        numberPicker.value = if (teamKind == TeamKind.Local) {
-            bet.homeGoalsBet ?: 0
-        } else {
-            bet.awayGoalsBet ?: 0
-        }
-        builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
-            viewModel.betScoreChanged(bet.match.id, numberPicker.value, teamKind)
-            adapter.screenItems = viewModel.bets.value!!
-            adapter.notifyDataSetChanged()
-            adapter.notifyItemChanged(adapter.screenItems.indexOfFirst {
-                ((it is ScreenItem.ScreenBet) && (it.bet.match.id == bet.match.id))
-            })
-        }
-        builder.setNegativeButton(getString(R.string.cancel))
-        { _, _ -> }
-        builder.setTitle(getString(R.string.dialog_title))
-        builder.setView(numberPicker)
-        builder.show()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mainScreenList = binding.recyclerList
@@ -82,35 +56,24 @@ class MainScreenFragment : Fragment() {
         val manager = LinearLayoutManager(activity)
         val carrousel = binding.carrousel
         val viewPageIndicator = binding.viewPageIndicator
-        val itemSearch = binding.itemSearch
-        adapter = MainScreenAdapter(requireContext(), ArrayList(),
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Local) },
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
-            { bet ->
-                this.findNavController().navigate(
-                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
-                )
-            })
+
+        viewModel.refreshMatches()
+        setObservers()
+        adapter = setAdapter()
+        setSearchItem()
 
         binding.recyclerList.adapter = adapter
-        binding.filterButton.setOnClickListener { setFilterDialog() }
         mainScreenList.layoutManager = manager
+
+        binding.filterButton.setOnClickListener { setFilterDialog() }
 
         carrousel.adapter = carrouselAdapter
         viewPageIndicator.setUpWithViewPager2(binding.carrousel)
         binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
+    }
 
-        viewModel.bets.observe(viewLifecycleOwner) {
-            val screenList = mutableListOf<ScreenItem>()
-            if (it == null || it.isEmpty()) {
-                screenList.add(ScreenItem.ScreenNothingFound())
-            } else {
-                screenList.addAll(it)
-            }
-            adapter.screenItems = screenList
-            adapter.notifyDataSetChanged()
-        }
-
+    private fun setSearchItem() {
+        val itemSearch = binding.itemSearch
         itemSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -131,17 +94,72 @@ class MainScreenFragment : Fragment() {
         }
 
         binding.searchButton.setOnClickListener { hideKeyboard() }
+    }
 
+    private fun setAdapter() =
+        MainScreenAdapter(requireContext(), ArrayList(),
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Home) },
+            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
+            { bet ->
+                this.findNavController().navigate(
+                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
+                )
+            })
+
+
+    private fun setObservers() {
+        viewModel.bets.observe(viewLifecycleOwner) {
+            val screenList = mutableListOf<ScreenItem>()
+            if (it == null || it.isEmpty()) {
+                screenList.add(ScreenItem.ScreenNothingFound())
+            } else {
+                screenList.addAll(it)
+            }
+            adapter.screenItems = screenList
+            adapter.notifyDataSetChanged()
+        }
+
+        viewModel.loadingContents.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.recyclerList.visibility = View.INVISIBLE
+                binding.contentLoading.visibility = View.VISIBLE
+            } else {
+                binding.recyclerList.visibility = View.VISIBLE
+                binding.contentLoading.visibility = View.GONE
+            }
+        }
+
+    }
+
+    private fun setNumberPickerForBetGoals(bet: Bet, teamKind: TeamKind) {
+        val builder = AlertDialog.Builder(context)
+        val numberPicker = NumberPicker(context)
+        numberPicker.minValue = 0
+        numberPicker.maxValue = 9
+        numberPicker.wrapSelectorWheel = true
+        numberPicker.value = if (teamKind == TeamKind.Home) {
+            bet.homeGoalsBet ?: 0
+        } else {
+            bet.awayGoalsBet ?: 0
+        }
+        builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
+            viewModel.betScoreChanged(bet.match.id, numberPicker.value, teamKind)
+            adapter.screenItems = viewModel.bets.value!!
+            adapter.notifyDataSetChanged()
+            adapter.notifyItemChanged(adapter.screenItems.indexOfFirst {
+                ((it is ScreenItem.ScreenBet) && (it.bet.match.id == bet.match.id))
+            })
+        }
+        builder.setNegativeButton(getString(R.string.cancel))
+        { _, _ -> }
+        builder.setTitle(getString(R.string.dialog_title))
+        builder.setView(numberPicker)
+        builder.show()
     }
 
     private fun hideKeyboard() {
         val manager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         manager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getAllItems()
     }
 
 }

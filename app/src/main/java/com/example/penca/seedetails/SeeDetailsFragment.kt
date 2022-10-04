@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
 import com.example.penca.R
 import com.example.penca.databinding.FragmentSeeDetailsBinding
-import com.example.penca.domain.entities.Bet
-import com.example.penca.domain.entities.BetResult
-import com.example.penca.domain.entities.BetStatus
+import com.example.penca.domain.entities.*
 import com.example.penca.domain.entities.Header.Companion.getHeaderText
+import com.example.penca.network.SeeDetailsBet
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +26,6 @@ class SeeDetailsFragment : Fragment() {
     private lateinit var binding: FragmentSeeDetailsBinding
     private lateinit var adapter: SeeDetailsAdapter
     private val manager = LinearLayoutManager(activity)
-    private lateinit var bet: Bet
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +33,7 @@ class SeeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val args: SeeDetailsFragmentArgs by navArgs()
-        bet = viewModel.getBetByMatchId(args.matchId)!!
+        viewModel.getBetByMatchId(args.matchId)
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_see_details, container, false
         )
@@ -41,66 +42,120 @@ class SeeDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (bet.match.events == null) {
+        viewModel.bet.observe(viewLifecycleOwner) {
+            setContents(it)
+        }
+
+        viewModel.loadingContents.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.contentLoading.show()
+            } else {
+                binding.contentLoading.hide()
+            }
+        }
+
+    }
+
+    private fun setContents(bet: SeeDetailsBet) {
+        if (bet.events.isEmpty()) {
             binding.matchEvents.visibility = View.INVISIBLE
             binding.nothingFoundText.visibility = View.VISIBLE
         } else {
-            binding.matchEvents.layoutManager = manager
-            binding.matchEvents.visibility = View.VISIBLE
-            binding.nothingFoundText.visibility = View.INVISIBLE
-            adapter = SeeDetailsAdapter(bet.match.events!!)
-            binding.matchEvents.adapter = adapter
-            (binding.matchEvents.adapter as SeeDetailsAdapter).notifyDataSetChanged()
+            setBetEvents(bet.events.map { it.getMatchEventFromNetworkEvent() })
         }
-        binding.awayTeamImage.setImageResource(bet.match.awayTeam.image)
-        binding.homeTeamImage.setImageResource(bet.match.homeTeam.image)
-        binding.awayTeamName.text = bet.match.awayTeam.name
-        binding.homeTeamName.text = bet.match.homeTeam.name
-        binding.matchResult.text =
-            bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
-        binding.dateText.text = getHeaderText(bet.match.date)
-        val statusText = binding.statusText
-        if (bet.status == BetStatus.Pending) {
-            statusText.text = context!!.getString(R.string.played_with_no_result)
-            statusText.background =
-                ContextCompat.getDrawable(
-                    context!!,
-                    R.drawable.list_item_status_box_not_done
-                )
-            binding.dateText.background =
-                ContextCompat.getDrawable(
-                    context!!,
-                    R.color.color_background_bet_header_not_done
-                )
 
+        setLogos(bet.homeTeamLogo, bet.awayTeamLogo, R.drawable.cs_nycl_blankplaceholder)
+        binding.awayTeamName.text = bet.awayTeamName
+        binding.homeTeamName.text = bet.homeTeamName
+        binding.matchResult.text =
+            bet.homeTeamGoals.toString() + " - " + bet.awayTeamGoals.toString()
+        binding.dateText.text = getHeaderText(bet.getLocalDate())
+
+        val statusText = binding.statusText
+        val dateText = binding.dateText
+        if (bet.getStatusFromString() == BetStatus.Pending) {
+            setPendingBet(statusText, dateText)
         } else {
             if (bet.result == BetResult.Wrong) {
-                statusText.text = context!!.getString(R.string.missed)
-                statusText.background =
-                    ContextCompat.getDrawable(
-                        context!!,
-                        R.drawable.list_item_status_box_incorrect
-                    )
-                binding.dateText.background =
-                    ContextCompat.getDrawable(
-                        context!!,
-                        R.color.color_background_bet_header_missed
-                    )
+                setWrongBet(statusText, dateText)
             } else {
-                statusText.text = context!!.getString(R.string.accerted)
-                statusText.background =
-                    ContextCompat.getDrawable(
-                        context!!,
-                        R.drawable.list_item_status_box_correct
-                    )
-
-                binding.dateText.background =
-                    ContextCompat.getDrawable(
-                        context!!,
-                        R.color.color_background_bet_header_accerted
-                    )
+                setAccertedBet(statusText, dateText)
             }
         }
+
+    }
+
+    private fun setAccertedBet(statusText: TextView, dateText: TextView) {
+        statusText.text = context!!.getString(R.string.accerted)
+        statusText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.drawable.list_item_status_box_correct
+            )
+
+        dateText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.color.color_background_bet_header_accerted
+            )
+    }
+
+    private fun setWrongBet(statusText: TextView, dateText: TextView) {
+        statusText.text = context!!.getString(R.string.missed)
+        statusText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.drawable.list_item_status_box_incorrect
+            )
+        dateText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.color.color_background_bet_header_missed
+            )
+    }
+
+    private fun setPendingBet(statusText: TextView, dateText: TextView) {
+        statusText.text = context!!.getString(R.string.played_with_no_result)
+        statusText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.drawable.list_item_status_box_not_done
+            )
+        dateText.background =
+            ContextCompat.getDrawable(
+                context!!,
+                R.color.color_background_bet_header_not_done
+            )
+    }
+
+    private fun setLogos(homeTeamLogo: String, awayTeamLogo: String, onError: Int) {
+        val circularProgressDrawable = CircularProgressDrawable(context!!)
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
+        Glide.with(binding.homeTeamImage.context)
+            .load(homeTeamLogo)
+            .placeholder(circularProgressDrawable)
+            .error(onError)
+            .fitCenter()
+            .into(binding.homeTeamImage)
+
+        Glide.with(binding.awayTeamImage.context)
+            .load(awayTeamLogo)
+            .placeholder(circularProgressDrawable)
+            .error(onError)
+            .fitCenter()
+            .into(binding.awayTeamImage)
+    }
+
+    private fun setBetEvents(events: List<MatchEvent>) {
+        binding.matchEvents.layoutManager = manager
+        binding.matchEvents.visibility = View.VISIBLE
+        binding.nothingFoundText.visibility = View.INVISIBLE
+        adapter = SeeDetailsAdapter(events)
+        binding.matchEvents.adapter = adapter
+        (binding.matchEvents.adapter as SeeDetailsAdapter).notifyDataSetChanged()
     }
 
 }

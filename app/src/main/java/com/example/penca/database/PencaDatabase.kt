@@ -21,7 +21,7 @@ abstract class PencaDatabase: RoomDatabase() {
                 if (!::PENCADBINSTANCE.isInitialized) {
                     PENCADBINSTANCE = Room.databaseBuilder(
                         context.applicationContext,
-                        PENCADBINSTANCE::class.java,
+                        PencaDatabase::class.java,
                         "items"
                     ).build()
                 }

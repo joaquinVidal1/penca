@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
 import com.example.penca.R
 import com.example.penca.databinding.*
 import com.example.penca.domain.entities.*
@@ -85,9 +87,23 @@ class MainScreenAdapter(
             onEditAwayResult: (Bet) -> Unit
         ) {
             binding.matchStatusText.text = bet.match.status.toString()
-            binding.imageLocalTeam.setImageResource(bet.match.homeTeam.image)
+            val circularProgressDrawable = CircularProgressDrawable(context)
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
+            Glide.with(binding.imageLocalTeam.context)
+                .load(bet.match.homeTeam.image)
+                .error(R.drawable.cs_nycl_blankplaceholder)
+                .placeholder(circularProgressDrawable)
+                .fitCenter()
+                .into(binding.imageLocalTeam)
             binding.nameLocalTeam.text = bet.match.homeTeam.name
-            binding.imageAwayTeam.setImageResource(bet.match.awayTeam.image)
+            Glide.with(binding.imageAwayTeam.context)
+                .load(bet.match.awayTeam.image)
+                .error(R.drawable.cs_nycl_blankplaceholder)
+                .placeholder(circularProgressDrawable)
+                .into(binding.imageAwayTeam)
             binding.nameAwayTeam.text = bet.match.awayTeam.name
             binding.localTeamScoreBet.text =
                 if (bet.homeGoalsBet == null) {

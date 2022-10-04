@@ -6,10 +6,11 @@ import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
 import com.example.penca.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class TeamKind {
-    Local,
+    Home,
     Away
 }
 
@@ -43,6 +44,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     private val _filter = MutableLiveData(BetFilter.SeeAll)
     val filter: LiveData<BetFilter>
         get() = _filter
+
+    private val _loadingContents = MutableLiveData(false)
+    val loadingContents: LiveData<Boolean>
+        get() = _loadingContents
 
     init {
         bets.addSource(_filter) { filter ->
@@ -122,20 +127,26 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         return screenList
     }
 
-    fun getAllItems() {
-        Log.i("ViewModel", "update items")
-    }
-
     fun onQueryChanged(query: String) {
         _query.value = query
     }
 
     fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
-        repository.betScoreChanged(matchId, newScore, teamKind)
+        viewModelScope.launch {
+            repository.betScoreChanged(matchId, newScore, teamKind)
+        }
     }
 
     fun onFilterChanged(filter: BetFilter) {
         _filter.value = filter
+    }
+
+    fun refreshMatches() {
+        _loadingContents.value = true
+        viewModelScope.launch {
+            repository.refreshMatches()
+            _loadingContents.postValue(false)
+        }
     }
 
 }

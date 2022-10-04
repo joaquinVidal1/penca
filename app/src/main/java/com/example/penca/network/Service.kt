@@ -7,14 +7,33 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
-import kotlin.reflect.jvm.internal.impl.types.checker.NewCapturedType
+import retrofit2.http.*
 
 interface MatchService {
 
+    @GET("/api/v1/match/?page=1&pageSize=20")
+    suspend fun getMatches(
+        @Header("AUTHORIZATION") auth: String
+    ): MatchesContainer
+
+    @GET
+    suspend fun getMatchDetails(
+        @Url url: String,
+        @Header("AUTHORIZATION") auth: String,
+    ): SeeDetailsBet
+
+    fun getUrlForMatchDetails(matchId: Int) = "/api/v1/match/$matchId"
+
+    @FormUrlEncoded
+    @PATCH
+    suspend fun placeBet(
+        @Url url: String,
+        @Header("AUTHORIZATION") auth: String,
+        @Field("homeGoals") homeGoals: Int,
+        @Field("awayGoals") awayGoals: Int
+    )
+
+    fun getUrlForPlaceBet(matchId: Int) = "/api/v1/match/$matchId"
 }
 
 interface UserService {
@@ -36,6 +55,7 @@ interface UserService {
 object UserNetwork {
 
     val user: UserService = getBuilder().create(UserService::class.java)
+    val match: MatchService = getBuilder().create(MatchService::class.java)
 
     private fun getBuilder(): Retrofit {
         val client = OkHttpClient.Builder()

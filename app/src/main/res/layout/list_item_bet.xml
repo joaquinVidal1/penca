@@ -47,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/image_local_team"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/escudo_penarol"
                 app:layout_constraintEnd_toStartOf="@id/user_score"
@@ -71,8 +71,8 @@
 
             <ImageView
                 android:id="@+id/image_away_team"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/escudo_nacional"
                 app:layout_constraintBottom_toBottomOf="@id/image_local_team"
                 app:layout_constraintEnd_toEndOf="parent"

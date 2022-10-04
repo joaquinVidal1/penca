@@ -1,12 +1,10 @@
 package com.example.penca.domain.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.time.LocalDate
 
-enum class MatchStatus {
-    Played,
-    Pending,
+enum class MatchStatus( ) {
+    Played(),
+    Pending(),
 }
 
 data class Match(
