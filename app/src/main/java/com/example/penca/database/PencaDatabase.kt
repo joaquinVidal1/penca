@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [MatchDB::class], version = 1, exportSchema = false)
+@Database(entities = [DBMatch::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class PencaDatabase: RoomDatabase() {
 

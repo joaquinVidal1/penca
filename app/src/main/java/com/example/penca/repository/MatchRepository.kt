@@ -2,7 +2,9 @@ package com.example.penca.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.example.penca.database.MatchDao
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.TeamKind
@@ -17,8 +19,27 @@ import javax.inject.Singleton
 class MatchRepository @Inject constructor(private val matchDao: MatchDao) {
 
     private val _betList = MutableLiveData<List<Bet>>(listOf())
-    val betList: LiveData<List<Bet>>
-        get() = _betList
+    val betList = MediatorLiveData<List<Bet>>()
+
+    init {
+        betList.addSource(matchDao.getMatches()){
+            it.map { dbMatch ->
+                val homeTeam = Team(dbMatch.homeTeamId, dbMatch.homeTeamName, dbMatch.homeTeamLogo)
+                val awayTeam = Team(dbMatch.awayTeamId, dbMatch.awayTeamName, dbMatch.awayTeamLogo)
+                val match = Match(
+                    dbMatch.matchId,
+                    homeTeam,
+                    awayTeam,
+                    dbMatch.date,
+                    dbMatch.goalsLocal,
+                    dbMatch.goalsAway,
+                    null
+                )
+                Bet(match, )
+
+            } ?: listOf()
+        }
+    }
 
     private val _networkError = MutableLiveData(false)
     val networkError: LiveData<Boolean>

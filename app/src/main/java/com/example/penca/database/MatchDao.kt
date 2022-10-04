@@ -6,16 +6,16 @@ import androidx.room.*
 @Dao
 interface MatchDao {
     @Query("select * from matchesTable")
-    fun getMatches(): LiveData<List<MatchDB>>
+    fun getMatches(): LiveData<List<DBMatch>>
 
     @Query("DELETE FROM matchesTable")
     fun emptyTable()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(matches: List<MatchDB>)
+    fun insertAll(matches: List<DBMatch>)
 
     @Transaction
-    fun emptyAndInsert(matches: List<MatchDB>){
+    fun emptyAndInsert(matches: List<DBMatch>){
         emptyTable()
         insertAll(matches)
     }

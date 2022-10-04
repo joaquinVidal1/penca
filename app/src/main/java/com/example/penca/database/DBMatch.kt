@@ -9,15 +9,15 @@ import java.time.LocalDate
 
 @Entity(tableName = "matchesTable")
 @TypeConverters(Converters::class)
-class MatchDB(
+class DBMatch(
     @PrimaryKey
     val matchId: Int,
     val homeTeamId: Int,
     val homeTeamName: String,
-    val homeTeamLogo: Int,
+    val homeTeamLogo: String,
     val awayTeamId: Int,
     val awayTeamName: String,
-    val awayTeamLogo: Int,
+    val awayTeamLogo: String,
     val date: LocalDate,
     val goalsLocal: Int? = null,
     val goalsAway: Int? = null,
