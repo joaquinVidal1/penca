@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.penca.domain.entities.Bet
 import com.example.penca.network.SeeDetailsBet
 import com.example.penca.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,7 @@ class SeeDetailsViewModel @Inject constructor(private val repository: MatchRepos
     fun getBetByMatchId(matchId: Int) {
         _loadingContents.value = true
         viewModelScope.launch {
-            _bet.postValue(repository.getBetByMatchId(matchId))
+            _bet.postValue(repository.getBetDetails(matchId))
             _loadingContents.postValue(false)
         }
 

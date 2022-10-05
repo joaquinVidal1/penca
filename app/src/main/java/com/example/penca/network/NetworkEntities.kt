@@ -175,3 +175,16 @@ data class MatchesContainer(
     val matches: List<NetworkMatch>,
 )
 
+data class AuthenticationBody(
+    val email: String,
+    val password: String
+)
+
+data class BetBody(
+    @Json(name = "homeGoals")
+    val homeTeamGoals: Int,
+
+    @Json(name = "awayGoals")
+    val awayTeamGoals: Int
+)
+

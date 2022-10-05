@@ -29,8 +29,7 @@ interface MatchService {
     suspend fun placeBet(
         @Url url: String,
         @Header("AUTHORIZATION") auth: String,
-        @Field("homeGoals") homeGoals: Int,
-        @Field("awayGoals") awayGoals: Int
+        @Body betBody: BetBody,
     )
 
     fun getUrlForPlaceBet(matchId: Int) = "/api/v1/match/$matchId"

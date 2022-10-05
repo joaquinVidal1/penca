@@ -1,6 +1,7 @@
 package com.example.penca.di
 
 import android.content.Context
+import com.example.penca.database.BetDao
 import com.example.penca.database.MatchDao
 import com.example.penca.database.PencaDatabase
 import dagger.Module
@@ -22,5 +23,10 @@ object DatabaseModule {
     @Provides
     fun provideMatchDao(database: PencaDatabase): MatchDao {
         return database.matchDao
+    }
+
+    @Provides
+    fun provideBetDao(database: PencaDatabase): BetDao {
+        return database.betDao
     }
 }

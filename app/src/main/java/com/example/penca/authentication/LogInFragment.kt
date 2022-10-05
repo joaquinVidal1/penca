@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class LogInFragment : Fragment() {
     private lateinit var binding: FragmentLogInBinding
     private val viewModel: LogInViewModel by viewModels()
-    val args: LogInFragmentArgs by navArgs()
+    private val args: LogInFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
