@@ -16,23 +16,21 @@ interface MatchService {
         @Header("AUTHORIZATION") auth: String
     ): MatchesContainer
 
-    @GET
+    @GET("/api/v1/match/{matchId}")
     suspend fun getMatchDetails(
-        @Url url: String,
+        @Path("matchId") matchId: Int,
         @Header("AUTHORIZATION") auth: String,
     ): SeeDetailsBet
 
     fun getUrlForMatchDetails(matchId: Int) = "/api/v1/match/$matchId"
 
     @FormUrlEncoded
-    @PATCH
+    @PATCH("/api/v1/match/{matchId}")
     suspend fun placeBet(
-        @Url url: String,
+        @Path("matchId") matchId: Int,
         @Header("AUTHORIZATION") auth: String,
         @Body betBody: BetBody,
     )
-
-    fun getUrlForPlaceBet(matchId: Int) = "/api/v1/match/$matchId"
 }
 
 interface UserService {

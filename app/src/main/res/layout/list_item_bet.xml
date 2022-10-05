@@ -141,29 +141,17 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/final_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="4dp"
-                android:text="3 - 0"
-                android:textColor="@color/color_background_score"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="@id/user_score"
-                app:layout_constraintStart_toStartOf="@id/user_score"
-                app:layout_constraintTop_toBottomOf="@id/user_score" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/see_details_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="35dp"
                 android:background="@drawable/background_see_details_button"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
                 android:padding="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/final_score">
+                app:layout_constraintTop_toBottomOf="@id/user_score">
 
                 <TextView
                     android:id="@+id/see_details_text"

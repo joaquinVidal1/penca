@@ -131,9 +131,14 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         _query.value = query
     }
 
-    fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
+    fun betScoreChanged(bet: Bet, newScore: Int, teamKind: TeamKind) {
+        if (teamKind == TeamKind.Home){
+            bet.homeGoalsBet = newScore
+        }else{
+            bet.awayGoalsBet = newScore
+        }
         viewModelScope.launch {
-            repository.betScoreChanged(matchId, newScore, teamKind)
+            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
         }
     }
 

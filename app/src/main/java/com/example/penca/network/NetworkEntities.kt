@@ -8,7 +8,7 @@ import java.util.*
 
 data class ErrorResponseForLogIng(
     val message: String?
-) {}
+)
 
 data class SeeDetailsBet(
     @Json(name = "matchId")
@@ -24,7 +24,7 @@ data class SeeDetailsBet(
     val homeTeamLogo: String,
 
     @Json(name = "homeTeamGoals")
-    val homeTeamGoals: Int,
+    val homeTeamGoals: Int?,
 
     @Json(name = "awayTeamName")
     val awayTeamName: String,
@@ -33,7 +33,7 @@ data class SeeDetailsBet(
     val awayTeamLogo: String,
 
     @Json(name = "awayTeamGoals")
-    val awayTeamGoals: Int,
+    val awayTeamGoals: Int?,
 
     @Json(name = "incidences")
     val events: List<NetworkMatchEvent>,
@@ -186,5 +186,19 @@ data class BetBody(
 
     @Json(name = "awayGoals")
     val awayTeamGoals: Int
+)
+
+data class BetAnswer(
+    @Json(name = "userId")
+    val userId: Int,
+
+    @Json(name = "matchId")
+    val matchId: Int,
+
+    @Json(name = "homeGoals")
+    val homeGoals: Int,
+
+    @Json(name = "awayGoals")
+    val awayGoals: Int
 )
 

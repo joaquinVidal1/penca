@@ -14,6 +14,9 @@ interface MatchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(matches: List<DBMatch>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMatch(match: DBMatch)
+
     @Transaction
     fun emptyAndInsert(matches: List<DBMatch>){
         emptyTable()

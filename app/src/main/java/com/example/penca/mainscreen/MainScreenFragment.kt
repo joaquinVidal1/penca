@@ -143,7 +143,7 @@ class MainScreenFragment : Fragment() {
             bet.awayGoalsBet ?: 0
         }
         builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
-            viewModel.betScoreChanged(bet.match.id, numberPicker.value, teamKind)
+            viewModel.betScoreChanged(bet, numberPicker.value, teamKind)
             adapter.screenItems = viewModel.bets.value!!
             adapter.notifyDataSetChanged()
             adapter.notifyItemChanged(adapter.screenItems.indexOfFirst {

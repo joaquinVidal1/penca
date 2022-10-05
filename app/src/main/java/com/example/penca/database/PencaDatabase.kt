@@ -6,12 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [DBMatch::class, DBBet::class], version = 1, exportSchema = false)
+@Database(entities = [DBMatch::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class PencaDatabase: RoomDatabase() {
 
     abstract val matchDao: MatchDao
-    abstract val betDao: BetDao
 
     companion object {
         @Volatile

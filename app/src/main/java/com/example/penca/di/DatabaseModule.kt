@@ -1,7 +1,6 @@
 package com.example.penca.di
 
 import android.content.Context
-import com.example.penca.database.BetDao
 import com.example.penca.database.MatchDao
 import com.example.penca.database.PencaDatabase
 import dagger.Module

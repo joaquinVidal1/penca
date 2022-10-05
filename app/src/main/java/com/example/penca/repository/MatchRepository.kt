@@ -1,12 +1,13 @@
 package com.example.penca.repository
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.example.penca.database.BetDao
-import com.example.penca.database.DBBet
+import com.example.penca.MainActivity
 import com.example.penca.database.DBMatch
 import com.example.penca.database.MatchDao
 import com.example.penca.domain.entities.*
@@ -24,13 +25,12 @@ import javax.inject.Singleton
 @Singleton
 class MatchRepository @Inject constructor(
     private val matchDao: MatchDao,
-    private val betDao: BetDao
+    private val activity: MainActivity
 ) {
-
     private val _betList = MutableLiveData<List<Bet>>(listOf())
     val betList = MediatorLiveData<List<Bet>>()
     private lateinit var loggedUser: NetworkUser
-    private lateinit var predictionList: LiveData<List<DBBet>>
+    private val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
 
     init {
         betList.addSource(matchDao.getMatches()) { list ->
@@ -71,7 +71,7 @@ class MatchRepository @Inject constructor(
             withContext(Dispatchers.IO) {
                 try {
                     val bet = UserNetwork.match.getMatchDetails(
-                        UserNetwork.match.getUrlForMatchDetails(match.id),
+                        match.id,
                         loggedUser.token
                     )
                     val betStatus = if (bet.predictionStatus == "not_predicted") {
@@ -87,40 +87,12 @@ class MatchRepository @Inject constructor(
         }
     }
 
-    suspend fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
+    suspend fun betScoreChanged(matchId: Int, homeScore: Int, awayScore: Int) {
         betList.value?.find { it.match.id == matchId }?.apply {
-            if (teamKind == TeamKind.Home) {
-                homeGoalsBet = newScore
-                if (this.awayGoalsBet != null) {
-                    betDao.insertBet(
-                        DBBet(
-                            matchId,
-                            loggedUser.userId,
-                            homeGoalsBet!!,
-                            awayGoalsBet!!
-                        )
-                    )
-                    placeBetOnApi(matchId, newScore, this.awayGoalsBet!!)
-                } else {
-                    betDao.insertBet(DBBet(matchId, loggedUser.userId, homeGoalsBet!!, -1))
-                }
-            } else {
-                awayGoalsBet = newScore
-                if (this.homeGoalsBet != null) {
-                    betDao.insertBet(
-                        DBBet(
-                            matchId,
-                            loggedUser.userId,
-                            homeGoalsBet!!,
-                            awayGoalsBet!!
-                        )
-                    )
-                    val homeGoals: Int = this.homeGoalsBet!!
-                    placeBetOnApi(matchId, homeGoals, newScore)
-                } else {
-                    betDao.insertBet(DBBet(matchId, loggedUser.userId, -1, awayGoalsBet!!))
-                }
-            }
+            this.homeGoalsBet = homeScore
+            this.awayGoalsBet = awayScore
+            placeBetOnApi(matchId, homeScore, awayScore)
+
         }
     }
 
@@ -128,7 +100,7 @@ class MatchRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 UserNetwork.match.getMatchDetails(
-                    UserNetwork.match.getUrlForMatchDetails(matchId),
+                    matchId,
                     loggedUser.token
                 )
             } catch (e: HttpException) {
@@ -138,40 +110,49 @@ class MatchRepository @Inject constructor(
 
 
     suspend fun logIn(email: String, password: String) =
-            try {
-                val networkUser = UserNetwork.user.logIn(email, password)
-                networkUser.token = "Bearer " + networkUser.token
-                loggedUser = networkUser
-                refreshFromDatabase(networkUser.userId)
-                null
-            } catch (e: HttpException) {
-                val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
-                Log.e(
-                    "http exception",
-                    errorResponse.toString()
-                )
-                getMessage(errorResponse)
+        try {
+            val networkUser = UserNetwork.user.logIn(email, password)
+            networkUser.token = "Bearer " + networkUser.token
+            loggedUser = networkUser
+            val oldUserId = sharedPreferences.getInt("userId", -1)
+            if (oldUserId != networkUser.userId){
+                matchDao.emptyTable()
+                val editor = sharedPreferences.edit()
+                editor.putInt("userId", networkUser.userId)
+                editor.apply()
             }
+            null
+        } catch (e: HttpException) {
+            val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
+            Log.e(
+                "http exception",
+                errorResponse.toString()
+            )
+            getMessage(errorResponse)
+        }
 
 
     private fun getMessage(errorResponse: String?) =
         errorResponse?.replace("{\"message\":\"", "")?.replace("\"}", "") ?: "error"
 
     suspend fun register(email: String, password: String) =
-            try {
-                val networkUser = UserNetwork.user.register(email, password)
-                networkUser.token = "Bearer " + networkUser.token
-                loggedUser = networkUser
-                refreshFromDatabase(networkUser.userId)
-                null
-            } catch (e: HttpException) {
-                val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
-                Log.e(
-                    "http exception",
-                    errorResponse.toString()
-                )
-                getMessage(errorResponse)
-            }
+        try {
+            val networkUser = UserNetwork.user.register(email, password)
+            networkUser.token = "Bearer " + networkUser.token
+            loggedUser = networkUser
+            matchDao.emptyTable()
+            val editor = sharedPreferences.edit()
+            editor.putInt("userId", networkUser.userId)
+            editor.apply()
+            null
+        } catch (e: HttpException) {
+            val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
+            Log.e(
+                "http exception",
+                errorResponse.toString()
+            )
+            getMessage(errorResponse)
+        }
 
     suspend fun refreshMatches() {
         withContext(Dispatchers.IO) {
@@ -183,11 +164,14 @@ class MatchRepository @Inject constructor(
     }
 
     private suspend fun getPredictionForMatch(match: DBMatch): Pair<Int, Int>? {
-        val result :Pair<Int, Int>?
+        val result: Pair<Int, Int>?
         if (match.date >= LocalDate.now()) {
             val prediction =
                 predictionList.value?.find { prediction -> prediction.matchId == match.matchId && prediction.userId == loggedUser.userId }
-            result = if (prediction != null) Pair(prediction.homeGoalsBet, prediction.awayGoalsBet) else null
+            result = if (prediction != null) Pair(
+                prediction.homeGoalsBet,
+                prediction.awayGoalsBet
+            ) else null
         } else {
             withContext(Dispatchers.IO) {
                 val betDetails = getBetByMatchIdFromApi(match.matchId)
@@ -197,7 +181,7 @@ class MatchRepository @Inject constructor(
                         betDetails.homeTeamPrediction!!,
                         betDetails.awayTeamPrediction!!
                     )
-                }else null
+                } else null
             }
         }
         return result
@@ -210,7 +194,7 @@ class MatchRepository @Inject constructor(
     ) {
         withContext(Dispatchers.IO) {
             UserNetwork.match.placeBet(
-                UserNetwork.match.getUrlForPlaceBet(matchId),
+                matchId,
                 loggedUser.token,
                 BetBody(
                     homeTeamPrediction,
@@ -225,8 +209,4 @@ class MatchRepository @Inject constructor(
         return getBetByMatchIdFromApi(matchId)
     }
 
-    private fun refreshFromDatabase(userId: Int){
-        predictionList = Transformations.map(betDao.getBetsForUser(userId)) { it }
-        betDao.deleteOtherUsersBets(userId)
-    }
 }
