@@ -20,12 +20,9 @@ object DatabaseModule {
     }
 
     @Provides
+    @Singleton
     fun provideMatchDao(database: PencaDatabase): MatchDao {
         return database.matchDao
     }
 
-    @Provides
-    fun provideBetDao(database: PencaDatabase): BetDao {
-        return database.betDao
-    }
 }

@@ -122,7 +122,7 @@ class MainScreenAdapter(
             } else {
                 binding.localTeamScoreBet.isClickable = false
                 binding.awayTeamScoreBet.isClickable = false
-                binding.finalScore.visibility = View.VISIBLE
+       //         binding.finalScore.visibility = View.VISIBLE
                 binding.userScore.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
@@ -138,7 +138,7 @@ class MainScreenAdapter(
                 binding.seeDetailsButton.setOnClickListener { onSeeDetailsClicked(bet) }
                 val finalScoreText =
                     bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
-                binding.finalScore.text = finalScoreText
+       //         binding.finalScore.text = finalScoreText
                 if (bet.status == BetStatus.Done) {
                     binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
                     binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
@@ -219,7 +219,7 @@ class MainScreenAdapter(
                 context,
                 R.drawable.background_score
             )
-            binding.finalScore.visibility = View.INVISIBLE
+       //     binding.finalScore.visibility = View.INVISIBLE
             binding.localTeamScoreBet.isClickable = true
             binding.awayTeamScoreBet.isClickable = true
             binding.localTeamScoreBet.setOnClickListener { onEditLocalResult(bet) }

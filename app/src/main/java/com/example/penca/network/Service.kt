@@ -3,11 +3,14 @@ package com.example.penca.network
 import com.example.penca.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
+
 
 interface MatchService {
 
@@ -22,8 +25,6 @@ interface MatchService {
         @Header("AUTHORIZATION") auth: String,
     ): SeeDetailsBet
 
-    fun getUrlForMatchDetails(matchId: Int) = "/api/v1/match/$matchId"
-
     @FormUrlEncoded
     @PATCH("/api/v1/match/{matchId}")
     suspend fun placeBet(
@@ -35,27 +36,40 @@ interface MatchService {
 
 interface UserService {
 
-    @FormUrlEncoded
     @POST("/api/v1/user/login")
     suspend fun logIn(
-        @Field("email") email: String, @Field("password") password: String
+        @Body authenticationBody: AuthenticationBody
     ): NetworkUser
 
-    @FormUrlEncoded
     @POST("/api/v1/user/")
     suspend fun register(
-        @Field("email") email: String, @Field("password") password: String
+        @Body authenticationBody: AuthenticationBody
     ): NetworkUser
 
 }
 
 object UserNetwork {
 
-    val user: UserService = getBuilder().create(UserService::class.java)
-    val match: MatchService = getBuilder().create(MatchService::class.java)
+//    val user: UserService = getBuilder().create(UserService::class.java)
+//    val match: MatchService = getBuilder().create(MatchService::class.java)
 
-    private fun getBuilder(): Retrofit {
+    fun getBuilder(on401Response: () -> Unit, getToken: () -> String?): Retrofit {
         val client = OkHttpClient.Builder()
+            .addInterceptor(Interceptor { chain ->
+                // Request
+                val token = getToken.invoke()
+                val requestBuilder = chain.request().newBuilder()
+                if (token != null) {
+                    requestBuilder.addHeader("AUTHORIZATION", "Bearer $token")
+                }
+                val response = chain.proceed(requestBuilder.build())
+                // Response
+                if (response.code == 401) {
+                    on401Response.invoke()
+                }
+                response
+            })
+
         if (BuildConfig.DEBUG) {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BODY

@@ -153,7 +153,13 @@ data class NetworkMatch(
     val homeTeamGoals: Int?,
 
     @Json(name = "awayTeamGoals")
-    val awayTeamGoals: Int?
+    val awayTeamGoals: Int?,
+
+    @Json(name = "predictedHomeGoals")
+    val predictedHomeGoals: Int?,
+
+    @Json(name = "predictedAwayGoals")
+    val predictedAwayGoals: Int?
 ) {
     fun asDomainMatch(): Match {
         val homeTeam = Team(homeTeamId, homeTeamName, homeTeamLogo)
@@ -176,7 +182,10 @@ data class MatchesContainer(
 )
 
 data class AuthenticationBody(
+    @Json(name = "email")
     val email: String,
+
+    @Json(name = "password")
     val password: String
 )
 

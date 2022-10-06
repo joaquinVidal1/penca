@@ -137,21 +137,21 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         }else{
             bet.awayGoalsBet = newScore
         }
-        viewModelScope.launch {
-            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
-        }
+//        viewModelScope.launch {
+//            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
+//        }
     }
 
     fun onFilterChanged(filter: BetFilter) {
         _filter.value = filter
     }
 
-    fun refreshMatches() {
-        _loadingContents.value = true
-        viewModelScope.launch {
-            repository.refreshMatches()
-            _loadingContents.postValue(false)
-        }
-    }
+//    fun refreshMatches() {
+//        _loadingContents.value = true
+//        viewModelScope.launch {
+//            repository.refreshMatches()
+//            _loadingContents.postValue(false)
+//        }
+//    }
 
 }

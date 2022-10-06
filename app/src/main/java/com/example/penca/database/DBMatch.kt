@@ -19,6 +19,8 @@ class DBMatch(
     val awayTeamName: String,
     val awayTeamLogo: String,
     val date: LocalDate,
-    val goalsLocal: Int? = null,
+    val goalsHome: Int? = null,
     val goalsAway: Int? = null,
+    val predictedGoalsHome: Int? = null,
+    val predictedGoalsAway: Int? = null
 )

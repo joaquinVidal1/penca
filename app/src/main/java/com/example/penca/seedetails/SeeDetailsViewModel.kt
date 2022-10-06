@@ -23,13 +23,13 @@ class SeeDetailsViewModel @Inject constructor(private val repository: MatchRepos
         get() = _loadingContents
 
 
-    fun getBetByMatchId(matchId: Int) {
-        _loadingContents.value = true
-        viewModelScope.launch {
-            _bet.postValue(repository.getBetDetails(matchId))
-            _loadingContents.postValue(false)
-        }
-
-    }
+//    fun getBetByMatchId(matchId: Int) {
+//        _loadingContents.value = true
+//        viewModelScope.launch {
+//            _bet.postValue(repository.getBetDetails(matchId))
+//            _loadingContents.postValue(false)
+//        }
+//
+//    }
 
 }

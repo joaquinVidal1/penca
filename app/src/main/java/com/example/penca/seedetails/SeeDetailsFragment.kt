@@ -33,7 +33,7 @@ class SeeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val args: SeeDetailsFragmentArgs by navArgs()
-        viewModel.getBetByMatchId(args.matchId)
+      //  viewModel.getBetByMatchId(args.matchId)
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_see_details, container, false
         )

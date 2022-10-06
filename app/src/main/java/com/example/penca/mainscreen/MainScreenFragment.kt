@@ -57,7 +57,7 @@ class MainScreenFragment : Fragment() {
         val carrousel = binding.carrousel
         val viewPageIndicator = binding.viewPageIndicator
 
-        viewModel.refreshMatches()
+      //  viewModel.refreshMatches()
         setObservers()
         adapter = setAdapter()
         setSearchItem()

@@ -4,15 +4,26 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.penca.network.UserNetwork
+import com.example.penca.utils.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
+import hilt_aggregated_deps._com_example_penca_authentication_LogInViewModel_HiltModules_BindsModule
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var preferenceHelper: PreferenceHelper
+    val viewModel: MainActivityViewModel by viewModels()
 
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var navController: NavController
@@ -22,6 +33,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setUpToolbar()
         modifyToolbar()
+        setLogOut()
+    }
+
+    private fun setLogOut() {
+        viewModel.logOut.observe(this){
+            if (it){
+               // this.navController.navigate(R.layout.fragment_log_in, null, navOptions = )
+                supportFragmentManager.popBackStack(R.layout.fragment_log_in, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
     }
 
     private fun setUpToolbar() {
@@ -50,8 +71,8 @@ class MainActivity : AppCompatActivity() {
                     pencaText.visibility = View.VISIBLE
                     logoImage.visibility = View.VISIBLE
                     detailsText.visibility = View.INVISIBLE
-                }else{
-                    if (destination.id == R.id.logInFragment || destination.id == R.id.registerFragment){
+                } else {
+                    if (destination.id == R.id.logInFragment || destination.id == R.id.registerFragment) {
                         pencaText.visibility = View.VISIBLE
                         logoImage.visibility = View.VISIBLE
                         detailsText.visibility = View.INVISIBLE

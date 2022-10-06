@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.penca.R
 import com.example.penca.databinding.FragmentLogInBinding
+import com.example.penca.network.UserNetwork
 import com.example.penca.seedetails.SeeDetailsFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -44,12 +45,25 @@ class LogInFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.alreadyLogged.observe(viewLifecycleOwner) {
+            if (it) {
+                this.findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToFragmentMainScreen())
+            }
+        }
+
         binding.registerText.setOnClickListener {
             val email: String = binding.emailInput.text.toString()
             val password: String = binding.passwordInput.text.toString()
             this.findNavController()
-                .navigate(LogInFragmentDirections.actionLogInFragmentToRegisterFragment(email, password))
+                .navigate(
+                    LogInFragmentDirections.actionLogInFragmentToRegisterFragment(
+                        email,
+                        password
+                    )
+                )
         }
+
         val inputEmail = binding.emailInput
         val inputPassword = binding.passwordInput
         binding.logInButton.setOnClickListener {
@@ -68,10 +82,10 @@ class LogInFragment : Fragment() {
             }
         }
 
-        viewModel.showProgressBar.observe(viewLifecycleOwner){
-            if (it){
+        viewModel.showProgressBar.observe(viewLifecycleOwner) {
+            if (it) {
                 binding.contentLoading.show()
-            }else{
+            } else {
                 binding.contentLoading.hide()
             }
         }
@@ -80,11 +94,11 @@ class LogInFragment : Fragment() {
             if (it == null) {
                 this.findNavController()
                     .navigate(LogInFragmentDirections.actionLogInFragmentToFragmentMainScreen())
-            }else{
+            } else {
                 if (it.contains("password")) {
                     inputPassword.error = it
                     inputPassword.requestFocus()
-                }else{
+                } else {
                     inputEmail.error = it
                     inputEmail.requestFocus()
                 }
