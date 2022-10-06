@@ -10,5 +10,5 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    val logOut = Transformations.map(authRepository.logOut()) { it }
+    val logOut = Transformations.map(authRepository.shouldLogOut) { it }
 }

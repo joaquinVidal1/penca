@@ -1,75 +1,63 @@
 package com.example.penca.repository
 
-import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.penca.database.DBMatch
 import com.example.penca.database.MatchDao
 import com.example.penca.domain.entities.*
+import com.example.penca.mainscreen.BetFilter
 import com.example.penca.network.*
-import com.example.penca.utils.PreferenceHelper
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import java.lang.Exception
+import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MatchRepository @Inject constructor(
     private val matchDao: MatchDao,
-    private val preferences: SharedPreferences,
-    private val preferenceHelper: PreferenceHelper,
+    private val matchApi: MatchService
 ) {
     private val _betList = MutableLiveData<List<Bet>>(listOf())
     val betList = MediatorLiveData<List<Bet>>()
-    private lateinit var loggedUser: NetworkUser
 
-//    init {
-//        betList.addSource(matchDao.getMatches()) { list ->
-//            list.map { dbMatch ->
-//                val homeTeam = Team(dbMatch.homeTeamId, dbMatch.homeTeamName, dbMatch.homeTeamLogo)
-//                val awayTeam = Team(dbMatch.awayTeamId, dbMatch.awayTeamName, dbMatch.awayTeamLogo)
-//                if (dbMatch.date.isBefore(LocalDate.now())) {
-//                    val match = Match(
-//                        dbMatch.matchId,
-//                        homeTeam,
-//                        awayTeam,
-//                        dbMatch.date,
-//                        null,
-//                        null,
-//                        null
-//                    )
-//                    val betStatus = if (dbMatch.goalsAway == null || dbMatch.goalsHome == null) {
-//                        BetStatus.Pending
-//                    } else {
-//                        BetStatus.Done
-//                    }
-//                    Bet(match, betStatus, dbMatch.goalsHome, dbMatch.goalsAway)
-//                } else {
-//                    val match = Match(
-//                        dbMatch.matchId,
-//                        homeTeam,
-//                        awayTeam,
-//                        dbMatch.date,
-//                        dbMatch.goalsHome,
-//                        dbMatch.goalsAway,
-//                        null
-//                    )
-//                    Bet(match)
-//                }
-//                val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-//                scope.launch {
-//                    val prediction = getPredictionForMatch(dbMatch)
-//                    if (prediction == null) {
-//                        Bet(match)
-//                    } else {
-//                        Bet(match, BetStatus.Done, prediction.first, prediction.second)
-//                    }
-//
-//                }
-//            }
-//        }
-//    }
+    init {
+        betList.addSource(matchDao.getMatches()) { list ->
+            list.map { dbMatch ->
+                val homeTeam = Team(dbMatch.homeTeamId, dbMatch.homeTeamName, dbMatch.homeTeamLogo)
+                val awayTeam = Team(dbMatch.awayTeamId, dbMatch.awayTeamName, dbMatch.awayTeamLogo)
+                if (dbMatch.date.isBefore(LocalDate.now())) {
+                    val match = Match(
+                        dbMatch.matchId,
+                        homeTeam,
+                        awayTeam,
+                        dbMatch.date,
+                        null,
+                        null,
+                        null
+                    )
+                    val betStatus = if (dbMatch.goalsAway == null || dbMatch.goalsHome == null) {
+                        BetStatus.Pending
+                    } else {
+                        BetStatus.Done
+                    }
+                    Bet(match, betStatus, dbMatch.goalsHome, dbMatch.goalsAway)
+                } else {
+                    val match = Match(
+                        dbMatch.matchId,
+                        homeTeam,
+                        awayTeam,
+                        dbMatch.date,
+                        dbMatch.goalsHome,
+                        dbMatch.goalsAway,
+                        null
+                    )
+                    Bet(match)
+                }
+
+            }
+        }
+    }
 
     private val _networkError = MutableLiveData(false)
     val networkError: LiveData<Boolean>
@@ -127,6 +115,31 @@ class MatchRepository @Inject constructor(
 //            _betList.postValue(getBetListFromMatchList(_matchList.value!!))
 //        }
 //    }
+
+    suspend fun refreshMatches(filter: BetFilter = BetFilter.SeeAll, query: String = "") {
+        try {
+            val matches = matchApi.getMatches()
+            matchDao.emptyAndInsert(matches.matches.map {
+                DBMatch(
+                    it.matchId,
+                    it.homeTeamId,
+                    it.homeTeamName,
+                    it.homeTeamLogo,
+                    it.awayTeamId,
+                    it.awayTeamName,
+                    it.awayTeamLogo,
+                    LocalDate.parse(it.date),
+                    it.homeTeamGoals,
+                    it.awayTeamGoals,
+                    it.predictedHomeGoals,
+                    it.predictedAwayGoals
+                )
+            })
+        } catch (networkError: Exception) {
+            _networkError.value = true
+        }
+
+    }
 
 //    private suspend fun getPredictionForMatch(match: DBMatch): Pair<Int, Int>? {
 //        val result: Pair<Int, Int>?

@@ -16,20 +16,17 @@ interface MatchService {
 
     @GET("/api/v1/match/?page=1&pageSize=20")
     suspend fun getMatches(
-        @Header("AUTHORIZATION") auth: String
     ): MatchesContainer
 
     @GET("/api/v1/match/{matchId}")
     suspend fun getMatchDetails(
         @Path("matchId") matchId: Int,
-        @Header("AUTHORIZATION") auth: String,
     ): SeeDetailsBet
 
     @FormUrlEncoded
     @PATCH("/api/v1/match/{matchId}")
     suspend fun placeBet(
         @Path("matchId") matchId: Int,
-        @Header("AUTHORIZATION") auth: String,
         @Body betBody: BetBody,
     )
 }
@@ -48,10 +45,7 @@ interface UserService {
 
 }
 
-object UserNetwork {
-
-//    val user: UserService = getBuilder().create(UserService::class.java)
-//    val match: MatchService = getBuilder().create(MatchService::class.java)
+object RetrofitFactory {
 
     fun getBuilder(on401Response: () -> Unit, getToken: () -> String?): Retrofit {
         val client = OkHttpClient.Builder()

@@ -3,6 +3,8 @@ package com.example.penca.di
 import android.content.Context
 import com.example.penca.database.MatchDao
 import com.example.penca.database.PencaDatabase
+import com.example.penca.repository.AuthRepository
+import com.example.penca.repository.MatchRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

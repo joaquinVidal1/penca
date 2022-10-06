@@ -57,7 +57,6 @@ class MainScreenFragment : Fragment() {
         val carrousel = binding.carrousel
         val viewPageIndicator = binding.viewPageIndicator
 
-      //  viewModel.refreshMatches()
         setObservers()
         adapter = setAdapter()
         setSearchItem()
@@ -65,11 +64,12 @@ class MainScreenFragment : Fragment() {
         binding.recyclerList.adapter = adapter
         mainScreenList.layoutManager = manager
 
-        binding.filterButton.setOnClickListener { setFilterDialog() }
+        binding.filterButton.setOnClickListener { setFilterDialog(); viewModel.refreshMatches() }
 
         carrousel.adapter = carrouselAdapter
         viewPageIndicator.setUpWithViewPager2(binding.carrousel)
         binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
+        viewModel.refreshMatches()
     }
 
     private fun setSearchItem() {

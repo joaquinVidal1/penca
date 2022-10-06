@@ -21,31 +21,26 @@ class AuthRepository @Inject constructor(
     private val userApi: UserService,
 ) {
 
-    private val _logOut = SingleLiveEvent<Boolean>()
+    private val _shouldLogOut = SingleLiveEvent<Boolean>()
+    val shouldLogOut: LiveData<Boolean> = _shouldLogOut
 
-    val isUserLogged =
-        MutableLiveData(preferenceHelper.getPreferences().getString("token", "null") != "null")
+    val isUserLogged = MutableLiveData(preferenceHelper.getToken() != "null")
 
     private lateinit var loggedUser: NetworkUser
 
-    fun logOut(): SingleLiveEvent<Boolean> {
+    fun logOut() {
         CoroutineScope(Dispatchers.IO).launch {
             matchDao.emptyTable()
         }
-        val editor = preferenceHelper.getPreferences().edit()
-        editor.remove("token")
-        editor.apply()
-        _logOut.value = true
-        return _logOut
+        preferenceHelper.removeToken()
+        _shouldLogOut.postValue(true)
     }
 
     suspend fun logIn(email: String, password: String) =
         try {
             val networkUser = userApi.logIn(AuthenticationBody(email, password))
             loggedUser = networkUser
-            val editor = preferenceHelper.getPreferences().edit()
-            editor.putString("token", networkUser.token)
-            editor.apply()
+            preferenceHelper.insertToken(networkUser.token)
             null
         } catch (e: HttpException) {
             val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()
@@ -56,6 +51,7 @@ class AuthRepository @Inject constructor(
             getMessage(errorResponse)
         }
 
+    //TODO habria que parsearlo del json con moshi
     private fun getMessage(errorResponse: String?) =
         errorResponse?.replace("{\"message\":\"", "")?.replace("\"}", "") ?: "error"
 
@@ -65,9 +61,7 @@ class AuthRepository @Inject constructor(
             networkUser.token = "Bearer " + networkUser.token
             loggedUser = networkUser
             matchDao.emptyTable()
-            val editor = preferenceHelper.getPreferences().edit()
-            editor.putString("token", networkUser.token)
-            editor.apply()
+            preferenceHelper.insertToken(networkUser.token)
             null
         } catch (e: HttpException) {
             val errorResponse = e.response()!!.errorBody()?.charStream()?.readText()

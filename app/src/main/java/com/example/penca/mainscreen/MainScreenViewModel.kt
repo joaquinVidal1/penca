@@ -146,12 +146,12 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         _filter.value = filter
     }
 
-//    fun refreshMatches() {
-//        _loadingContents.value = true
-//        viewModelScope.launch {
-//            repository.refreshMatches()
-//            _loadingContents.postValue(false)
-//        }
-//    }
+    fun refreshMatches() {
+        _loadingContents.value = true
+        viewModelScope.launch {
+            repository.refreshMatches()
+            _loadingContents.postValue(false)
+        }
+    }
 
 }

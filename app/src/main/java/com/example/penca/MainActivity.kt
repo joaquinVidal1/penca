@@ -5,17 +5,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.penca.network.UserNetwork
 import com.example.penca.utils.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
-import hilt_aggregated_deps._com_example_penca_authentication_LogInViewModel_HiltModules_BindsModule
 import javax.inject.Inject
 
 @AndroidEntryPoint
