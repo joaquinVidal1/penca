@@ -17,7 +17,7 @@ import com.example.penca.R
 import com.example.penca.databinding.FragmentSeeDetailsBinding
 import com.example.penca.domain.entities.*
 import com.example.penca.domain.entities.Header.Companion.getHeaderText
-import com.example.penca.network.SeeDetailsBet
+import com.example.penca.network.entities.SeeDetailsBet
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +33,7 @@ class SeeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val args: SeeDetailsFragmentArgs by navArgs()
-      //  viewModel.getBetByMatchId(args.matchId)
+        viewModel.getBetByMatchId(args.matchId)
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_see_details, container, false
         )
@@ -42,18 +42,34 @@ class SeeDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.bet.observe(viewLifecycleOwner) {
-            setContents(it)
-        }
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
             if (it) {
                 binding.contentLoading.show()
+                cleanScreen()
             } else {
                 binding.contentLoading.hide()
+                setContents(viewModel.bet)
             }
         }
 
+        viewModel.networkError.observe(viewLifecycleOwner){
+            if (it){
+                cleanScreen()
+                binding.contentLoading.hide()
+                binding.nothingFoundText.visibility = View.VISIBLE
+            }
+        }
+
+    }
+
+    private fun cleanScreen() {
+        binding.dateText.visibility = View.GONE
+        binding.statusText.visibility = View.GONE
+        binding.homeTeamName.text = ""
+        binding.awayTeamName.text = ""
+        binding.matchResult.text = " - "
+        setBetEvents(listOf())
     }
 
     private fun setContents(bet: SeeDetailsBet) {
@@ -73,6 +89,8 @@ class SeeDetailsFragment : Fragment() {
 
         val statusText = binding.statusText
         val dateText = binding.dateText
+        statusText.visibility = View.VISIBLE
+        dateText.visibility = View.VISIBLE
         if (bet.getStatusFromString() == BetStatus.Pending) {
             setPendingBet(statusText, dateText)
         } else {

@@ -1,6 +1,6 @@
 package com.example.penca.domain.entities
 
-import com.example.penca.network.NetworkMatchEvent
+import com.example.penca.network.entities.NetworkMatchEvent
 
 enum class MatchEventKind() {
     Goal,

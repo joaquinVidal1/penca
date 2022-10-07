@@ -38,7 +38,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.example.penca.mainscreen.ViewPagerIndicator
+                <com.example.penca.mainscreen.carrousel.ViewPagerIndicator
                     android:id="@+id/view_page_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -41,6 +41,7 @@
             android:id="@+id/entire_bet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="35dp"
             android:background="@drawable/background_list_item_bet_body_pending"
             app:layout_constraintStart_toStartOf="@id/header_bet"
             app:layout_constraintTop_toBottomOf="@id/header_bet">
@@ -60,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="35dp"
                 android:fontFamily="@font/lato"
                 android:text="Peñarol"
                 android:textColor="@color/white"
@@ -141,45 +142,43 @@
 
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/see_details_button"
-                android:layout_width="match_parent"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/see_details_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_see_details_button"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/entire_bet_body">
+
+            <TextView
+                android:id="@+id/see_details_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/background_see_details_button"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:padding="8dp"
+                android:fontFamily="@font/lato"
+                android:gravity="center"
+                android:text="@string/see_details"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/see_details"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/user_score">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/see_details_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/lato"
-                    android:gravity="center"
-                    android:text="@string/see_details"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/see_details"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:textSize="12sp" />
-
-                <ImageView
-                    android:id="@+id/see_details_vector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/see_details_vector"
-                    app:layout_constraintTop_toTopOf="@id/see_details_text"
-                    app:layout_constraintBottom_toBottomOf="@id/see_details_text"
-                    app:layout_constraintStart_toEndOf="@id/see_details_text"
-                    android:layout_marginStart="5dp"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/see_details_vector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/see_details_vector"
+                app:layout_constraintTop_toTopOf="@id/see_details_text"
+                app:layout_constraintBottom_toBottomOf="@id/see_details_text"
+                app:layout_constraintStart_toEndOf="@id/see_details_text"
+                android:layout_marginStart="5dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

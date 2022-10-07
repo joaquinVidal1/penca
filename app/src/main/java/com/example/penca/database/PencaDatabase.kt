@@ -22,7 +22,7 @@ abstract class PencaDatabase: RoomDatabase() {
                     PENCADBINSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         PencaDatabase::class.java,
-                        "items"
+                        "matches"
                     ).build()
                 }
             }

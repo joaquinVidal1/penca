@@ -22,7 +22,6 @@ object DatabaseModule {
     }
 
     @Provides
-    @Singleton
     fun provideMatchDao(database: PencaDatabase): MatchDao {
         return database.matchDao
     }

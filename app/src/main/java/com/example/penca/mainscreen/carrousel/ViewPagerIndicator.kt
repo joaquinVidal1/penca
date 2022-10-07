@@ -1,4 +1,4 @@
-package com.example.penca.mainscreen
+package com.example.penca.mainscreen.carrousel
 
 import android.content.Context
 import android.graphics.drawable.Drawable

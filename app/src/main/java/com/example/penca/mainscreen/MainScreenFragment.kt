@@ -19,6 +19,8 @@ import com.example.penca.R
 import com.example.penca.databinding.FragmentMainScreenBinding
 import com.example.penca.domain.entities.Bet
 import com.example.penca.domain.entities.ScreenItem
+import com.example.penca.mainscreen.carrousel.FeatureCarrouselFragment
+import com.example.penca.mainscreen.carrousel.ZoomOutPageTransformer
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -36,17 +38,8 @@ class MainScreenFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main_screen, container, false
         )
+        viewModel.refreshMatches()
         return binding.root
-    }
-
-    private fun setFilterDialog() {
-        val dialog = viewModel.filter.value?.let {
-            FilterDialog(it) { filter: BetFilter ->
-                viewModel.onFilterChanged(filter)
-            }
-        }
-        dialog!!.show(childFragmentManager, "Filter dialog")
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +62,16 @@ class MainScreenFragment : Fragment() {
         carrousel.adapter = carrouselAdapter
         viewPageIndicator.setUpWithViewPager2(binding.carrousel)
         binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
-        viewModel.refreshMatches()
+    }
+
+    private fun setFilterDialog() {
+        val dialog = viewModel.filter.value?.let {
+            FilterDialog(it) { filter: BetFilter ->
+                viewModel.onFilterChanged(filter)
+            }
+        }
+        dialog!!.show(childFragmentManager, "Filter dialog")
+
     }
 
     private fun setSearchItem() {
@@ -145,7 +147,6 @@ class MainScreenFragment : Fragment() {
         builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
             viewModel.betScoreChanged(bet, numberPicker.value, teamKind)
             adapter.screenItems = viewModel.bets.value!!
-            adapter.notifyDataSetChanged()
             adapter.notifyItemChanged(adapter.screenItems.indexOfFirst {
                 ((it is ScreenItem.ScreenBet) && (it.bet.match.id == bet.match.id))
             })

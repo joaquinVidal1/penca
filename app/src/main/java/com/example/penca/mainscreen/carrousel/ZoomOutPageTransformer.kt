@@ -1,4 +1,4 @@
-package com.example.penca.mainscreen
+package com.example.penca.mainscreen.carrousel
 
 import android.view.View
 import androidx.viewpager.widget.ViewPager

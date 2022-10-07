@@ -1,4 +1,4 @@
-package com.example.penca
+package com.example.penca.main
 
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel

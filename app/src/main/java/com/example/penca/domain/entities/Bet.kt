@@ -1,5 +1,7 @@
 package com.example.penca.domain.entities
 
+import com.example.penca.database.DBMatch
+
 
 enum class BetResult {
     Right,
@@ -22,4 +24,19 @@ data class Bet(
     } else {
         BetResult.Wrong
     }
+
+    fun asDBMatch() = DBMatch(
+        this.match.id,
+        this.match.homeTeam.id,
+        this.match.homeTeam.name,
+        this.match.homeTeam.image,
+        this.match.awayTeam.id,
+        this.match.awayTeam.name,
+        this.match.awayTeam.image,
+        this.match.date,
+        this.match.goalsLocal,
+        this.match.goalsAway,
+        this.homeGoalsBet,
+        this.awayGoalsBet
+    )
 }

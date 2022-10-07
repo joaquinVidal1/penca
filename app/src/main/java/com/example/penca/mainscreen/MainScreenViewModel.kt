@@ -40,7 +40,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
 
     private val _query = MutableLiveData("")
     val bets = MediatorLiveData<List<ScreenItem>>()
-    private val nonFilteredBets = Transformations.map(repository.betList) { it }
+    private val nonFilteredBets = Transformations.map(repository.betList){ it }
     private val _filter = MutableLiveData(BetFilter.SeeAll)
     val filter: LiveData<BetFilter>
         get() = _filter
@@ -137,9 +137,9 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         }else{
             bet.awayGoalsBet = newScore
         }
-//        viewModelScope.launch {
-//            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
-//        }
+        viewModelScope.launch {
+            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
+        }
     }
 
     fun onFilterChanged(filter: BetFilter) {

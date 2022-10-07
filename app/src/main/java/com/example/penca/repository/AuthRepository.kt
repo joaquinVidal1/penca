@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.penca.database.MatchDao
-import com.example.penca.network.AuthenticationBody
-import com.example.penca.network.NetworkUser
+import com.example.penca.network.entities.AuthenticationBody
+import com.example.penca.network.entities.NetworkUser
 import com.example.penca.network.UserService
 import com.example.penca.utils.PreferenceHelper
 import com.example.penca.utils.SingleLiveEvent

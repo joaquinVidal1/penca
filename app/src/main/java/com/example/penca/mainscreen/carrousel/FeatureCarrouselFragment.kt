@@ -1,4 +1,4 @@
-package com.example.penca.mainscreen
+package com.example.penca.mainscreen.carrousel
 
 import android.os.Bundle
 import android.view.LayoutInflater

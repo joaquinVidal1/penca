@@ -1,4 +1,4 @@
-package com.example.penca
+package com.example.penca.main
 
 import android.os.Bundle
 import android.view.View
@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.penca.R
 import com.example.penca.utils.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     private fun setLogOut() {
         viewModel.logOut.observe(this){
             if (it){
-               // this.navController.navigate(R.layout.fragment_log_in, null, navOptions = )
                 supportFragmentManager.popBackStack(R.layout.fragment_log_in, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
