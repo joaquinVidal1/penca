@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -74,36 +75,16 @@ class MainScreenAdapter(
             onEditAwayResult: (Bet) -> Unit
         ) {
             binding.matchStatusText.text = bet.match.status.toString()
-            val circularProgressDrawable = CircularProgressDrawable(context)
-            circularProgressDrawable.strokeWidth = 5f
-            circularProgressDrawable.centerRadius = 30f
-            circularProgressDrawable.start()
-
-            Glide.with(binding.imageLocalTeam.context)
-                .load(bet.match.homeTeam.image)
-                .error(R.drawable.cs_nycl_blankplaceholder)
-                .placeholder(circularProgressDrawable)
-                .fitCenter()
-                .into(binding.imageLocalTeam)
+            placeImage(binding.imageLocalTeam, bet.match.homeTeam.image)
+            placeImage(binding.imageAwayTeam, bet.match.awayTeam.image)
             binding.nameLocalTeam.text = bet.match.homeTeam.name
-            Glide.with(binding.imageAwayTeam.context)
-                .load(bet.match.awayTeam.image)
-                .error(R.drawable.cs_nycl_blankplaceholder)
-                .placeholder(circularProgressDrawable)
-                .into(binding.imageAwayTeam)
             binding.nameAwayTeam.text = bet.match.awayTeam.name
+
             binding.localTeamScoreBet.text =
-                if (bet.homeGoalsBet == null) {
-                    "   "
-                } else {
-                    bet.homeGoalsBet.toString()
-                }
+                bet.homeGoalsBet?.toString() ?: " "
             binding.awayTeamScoreBet.text =
-                if (bet.awayGoalsBet == null) {
-                    "   "
-                } else {
-                    bet.awayGoalsBet.toString()
-                }
+                bet.awayGoalsBet?.toString() ?: " "
+
             if (bet.match.status == MatchStatus.Pending) {
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
             } else {
@@ -139,6 +120,19 @@ class MainScreenAdapter(
                 }
                 View.VISIBLE
             }
+        }
+
+        private fun placeImage(imageView: ImageView, image: String){
+            val circularProgressDrawable = CircularProgressDrawable(context)
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
+            Glide.with(imageView.context)
+                .load(image)
+                .error(R.drawable.cs_nycl_blankplaceholder)
+                .placeholder(circularProgressDrawable)
+                .into(imageView)
         }
 
         private fun bindPlayedMatchWithoutBet() {

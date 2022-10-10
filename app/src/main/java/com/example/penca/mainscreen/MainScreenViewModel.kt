@@ -1,5 +1,6 @@
 package com.example.penca.mainscreen
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
@@ -38,10 +39,14 @@ enum class BetFilter {
 class MainScreenViewModel @Inject constructor(private val repository: MatchRepository) :
     ViewModel() {
 
-    private val numberOfPageLoaded = 1
+    val noMoreBets = Transformations.map(repository.noMoreBets) { it }
+    private var numberOfPageLoaded = 1
     private val _query = MutableLiveData("")
     val bets = MediatorLiveData<List<ScreenItem>>()
-    private val nonFilteredBets = Transformations.map(repository.betList){ it }
+    private val nonFilteredBets = Transformations.map(repository.betList) {
+        Log.i("observer", it.toString())
+        it
+    }
     private val _filter = MutableLiveData(BetFilter.SeeAll)
     val filter: LiveData<BetFilter>
         get() = _filter
@@ -49,6 +54,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     private val _loadingContents = MutableLiveData(false)
     val loadingContents: LiveData<Boolean>
         get() = _loadingContents
+
+    private val _loadingMoreBets = MutableLiveData(false)
+    val loadingMoreBets: LiveData<Boolean>
+        get() = _loadingMoreBets
 
     init {
         bets.addSource(_filter) { filter ->
@@ -133,9 +142,9 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     }
 
     fun betScoreChanged(bet: Bet, newScore: Int, teamKind: TeamKind) {
-        if (teamKind == TeamKind.Home){
+        if (teamKind == TeamKind.Home) {
             bet.homeGoalsBet = newScore
-        }else{
+        } else {
             bet.awayGoalsBet = newScore
         }
         viewModelScope.launch {
@@ -155,11 +164,13 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         }
     }
 
-     fun loadMoreBets(){
-        numberOfPageLoaded.inc()
-         viewModelScope.launch {
-             repository.loadMoreBets(numberOfPageLoaded)
-         }
+    fun loadMoreBets() {
+        _loadingMoreBets.value = true
+        numberOfPageLoaded += 1
+        viewModelScope.launch {
+            repository.loadMoreBets(numberOfPageLoaded)
+            _loadingMoreBets.postValue(false)
+        }
     }
 
 }

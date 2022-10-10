@@ -8,12 +8,15 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.NumberPicker
+import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.penca.R
 import com.example.penca.databinding.FragmentMainScreenBinding
@@ -46,22 +49,44 @@ class MainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mainScreenList = binding.recyclerList
-        val carrouselAdapter = BannerSlidePagerAdapter(requireActivity())
-        layoutManager = LinearLayoutManager(activity)
-        val carrousel = binding.carrousel
-        val viewPageIndicator = binding.viewPageIndicator
+        val nestedScrollView = binding.nestedScrollView
+
 
         setObservers()
-        adapter = setAdapter()
+        setAdapter()
         setSearchItem()
+        //setScrollListener(mainScreenList)
 
+        layoutManager = LinearLayoutManager(activity)
         mainScreenList.adapter = adapter
         mainScreenList.layoutManager = layoutManager
-
         binding.filterButton.setOnClickListener { setFilterDialog(); viewModel.refreshMatches() }
 
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!nestedScrollView.canScrollVertically(1)) {
+                if ((viewModel.noMoreBets.value == null) || viewModel.noMoreBets.value == false)
+                viewModel.loadMoreBets()
+            }
+        })
+        setCarrousel()
+    }
+
+    private fun setScrollListener(mainScreenList: RecyclerView) {
+        mainScreenList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewModel.loadMoreBets()
+                }
+            }
+        })
+    }
+
+    private fun setCarrousel() {
+        val carrousel = binding.carrousel
+        val carrouselAdapter = BannerSlidePagerAdapter(requireActivity())
         carrousel.adapter = carrouselAdapter
-        viewPageIndicator.setUpWithViewPager2(binding.carrousel)
+        binding.viewPageIndicator.setUpWithViewPager2(binding.carrousel)
         carrousel.setPageTransformer(ZoomOutPageTransformer())
     }
 
@@ -99,15 +124,19 @@ class MainScreenFragment : Fragment() {
         binding.searchButton.setOnClickListener { hideKeyboard() }
     }
 
-    private fun setAdapter() =
-        MainScreenAdapter(requireContext(),
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Home) },
-            { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
-            { bet ->
-                this.findNavController().navigate(
-                    MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(bet.match.id)
-                )
-            })
+    private fun setAdapter() {
+        adapter =
+            MainScreenAdapter(requireContext(),
+                { bet -> setNumberPickerForBetGoals(bet, TeamKind.Home) },
+                { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
+                { bet ->
+                    this.findNavController().navigate(
+                        MainScreenFragmentDirections.actionFragmentMainScreenToSeeDetailsFragment2(
+                            bet.match.id
+                        )
+                    )
+                })
+    }
 
 
     private fun setObservers() {
@@ -122,7 +151,6 @@ class MainScreenFragment : Fragment() {
                 screenList.addAll(it)
             }
             adapter.submitList(screenList)
-            binding.recyclerList.addOnScrollListener(OnScrollListener(layoutManager, adapter, screenList, viewModel))
         }
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
@@ -132,6 +160,14 @@ class MainScreenFragment : Fragment() {
             } else {
                 binding.recyclerList.visibility = View.VISIBLE
                 binding.contentLoading.visibility = View.GONE
+            }
+        }
+
+        viewModel.loadingMoreBets.observe(viewLifecycleOwner){
+            if (it) {
+                binding.loadingMoreBets.visibility = View.VISIBLE
+            } else {
+                binding.loadingMoreBets.visibility = View.GONE
             }
         }
 
@@ -159,7 +195,8 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        val manager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val manager =
+            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         manager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 

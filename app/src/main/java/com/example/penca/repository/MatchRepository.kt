@@ -11,6 +11,7 @@ import com.example.penca.network.*
 import com.example.penca.network.entities.BetAnswer
 import com.example.penca.network.entities.BetBody
 import com.example.penca.network.entities.SeeDetailsBet
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -23,6 +24,10 @@ class MatchRepository @Inject constructor(
     private val matchDao: MatchDao,
     private val matchApi: MatchService
 ) {
+    private val _noMoreBets = MutableLiveData(false)
+    val noMoreBets: LiveData<Boolean>
+        get() = _noMoreBets
+
     private val _betList = MutableLiveData<List<Bet>>(listOf())
 //    val betList: List<Bet>
 //        get() = databaseMatches.value ?: listOf()
@@ -31,14 +36,14 @@ class MatchRepository @Inject constructor(
         Transformations.map(matchDao.getMatches()) {
             it.map { dbMatch -> dbMatch.asBet() }
         }
-    private val _extraBets = MutableLiveData<List<Bet>>()
+    private val _extraBets = MutableLiveData<List<Bet>>(listOf())
 
     init {
         betList.addSource(databaseMatches) {
             betList.value = it
         }
         betList.addSource(_extraBets){
-            _betList.value = _betList.value?.plus(it ?: listOf())
+            betList.value = _betList.value?.plus(it ?: listOf())
         }
     }
 
@@ -145,7 +150,11 @@ class MatchRepository @Inject constructor(
     }
 
     suspend fun loadMoreBets(numberOfPageToLoad: Int) {
-        _extraBets.value = _extraBets.value?.plus(matchApi.getMatches(numberOfPageToLoad).matches.map { it.asBet() })
+        val obtainedMatches = matchApi.getMatches(numberOfPageToLoad, 10).matches
+        if (obtainedMatches.isEmpty()){
+            _noMoreBets.value = true
+        }
+        _extraBets.value = _extraBets.value?.plus(obtainedMatches.map { it.asBet() })
     }
 
 }
