@@ -11,40 +11,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
-
-interface MatchService {
-
-    @GET("/api/v1/match/?page=1&pageSize=20")
-    suspend fun getMatches(
-    ): MatchesContainer
-
-    @GET("/api/v1/match/{matchId}")
-    suspend fun getMatchDetails(
-        @Path("matchId") matchId: Int,
-    ): SeeDetailsBet
-
-    @FormUrlEncoded
-    @PATCH("/api/v1/match/{matchId}")
-    suspend fun placeBet(
-        @Path("matchId") matchId: Int,
-        @Body betBody: BetBody,
-    )
-}
-
-interface UserService {
-
-    @POST("/api/v1/user/login")
-    suspend fun logIn(
-        @Body authenticationBody: AuthenticationBody
-    ): NetworkUser
-
-    @POST("/api/v1/user/")
-    suspend fun register(
-        @Body authenticationBody: AuthenticationBody
-    ): NetworkUser
-
-}
-
 object RetrofitFactory {
 
     fun getBuilder(on401Response: () -> Unit, getToken: () -> String?): Retrofit {

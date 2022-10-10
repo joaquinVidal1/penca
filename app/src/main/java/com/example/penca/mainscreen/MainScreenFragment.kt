@@ -29,6 +29,7 @@ class MainScreenFragment : Fragment() {
     private val viewModel: MainScreenViewModel by viewModels()
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var adapter: MainScreenAdapter
+    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +47,7 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mainScreenList = binding.recyclerList
         val carrouselAdapter = BannerSlidePagerAdapter(requireActivity())
-        val manager = LinearLayoutManager(activity)
+        layoutManager = LinearLayoutManager(activity)
         val carrousel = binding.carrousel
         val viewPageIndicator = binding.viewPageIndicator
 
@@ -54,14 +55,14 @@ class MainScreenFragment : Fragment() {
         adapter = setAdapter()
         setSearchItem()
 
-        binding.recyclerList.adapter = adapter
-        mainScreenList.layoutManager = manager
+        mainScreenList.adapter = adapter
+        mainScreenList.layoutManager = layoutManager
 
         binding.filterButton.setOnClickListener { setFilterDialog(); viewModel.refreshMatches() }
 
         carrousel.adapter = carrouselAdapter
         viewPageIndicator.setUpWithViewPager2(binding.carrousel)
-        binding.carrousel.setPageTransformer(ZoomOutPageTransformer())
+        carrousel.setPageTransformer(ZoomOutPageTransformer())
     }
 
     private fun setFilterDialog() {
@@ -99,7 +100,7 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun setAdapter() =
-        MainScreenAdapter(requireContext(), ArrayList(),
+        MainScreenAdapter(requireContext(),
             { bet -> setNumberPickerForBetGoals(bet, TeamKind.Home) },
             { bet -> setNumberPickerForBetGoals(bet, TeamKind.Away) },
             { bet ->
@@ -113,12 +114,15 @@ class MainScreenFragment : Fragment() {
         viewModel.bets.observe(viewLifecycleOwner) {
             val screenList = mutableListOf<ScreenItem>()
             if (it == null || it.isEmpty()) {
-                screenList.add(ScreenItem.ScreenNothingFound())
+                binding.nothingFoundText.visibility = View.VISIBLE
+                binding.recyclerList.visibility = View.INVISIBLE
             } else {
+                binding.nothingFoundText.visibility = View.GONE
+                binding.recyclerList.visibility = View.VISIBLE
                 screenList.addAll(it)
             }
-            adapter.screenItems = screenList
-            adapter.notifyDataSetChanged()
+            adapter.submitList(screenList)
+            binding.recyclerList.addOnScrollListener(OnScrollListener(layoutManager, adapter, screenList, viewModel))
         }
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
@@ -146,10 +150,6 @@ class MainScreenFragment : Fragment() {
         }
         builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
             viewModel.betScoreChanged(bet, numberPicker.value, teamKind)
-            adapter.screenItems = viewModel.bets.value!!
-            adapter.notifyItemChanged(adapter.screenItems.indexOfFirst {
-                ((it is ScreenItem.ScreenBet) && (it.bet.match.id == bet.match.id))
-            })
         }
         builder.setNegativeButton(getString(R.string.cancel))
         { _, _ -> }

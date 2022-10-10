@@ -1,22 +1,20 @@
 package com.example.penca.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.example.penca.database.DBMatch
 import com.example.penca.database.MatchDao
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter
 import com.example.penca.network.*
+import com.example.penca.network.entities.BetAnswer
 import com.example.penca.network.entities.BetBody
 import com.example.penca.network.entities.SeeDetailsBet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.lang.Exception
-import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,15 +24,21 @@ class MatchRepository @Inject constructor(
     private val matchApi: MatchService
 ) {
     private val _betList = MutableLiveData<List<Bet>>(listOf())
+//    val betList: List<Bet>
+//        get() = databaseMatches.value ?: listOf()
     val betList = MediatorLiveData<List<Bet>>()
     private val databaseMatches: LiveData<List<Bet>> =
         Transformations.map(matchDao.getMatches()) {
             it.map { dbMatch -> dbMatch.asBet() }
         }
+    private val _extraBets = MutableLiveData<List<Bet>>()
 
     init {
         betList.addSource(databaseMatches) {
             betList.value = it
+        }
+        betList.addSource(_extraBets){
+            _betList.value = _betList.value?.plus(it ?: listOf())
         }
     }
 
@@ -66,13 +70,25 @@ class MatchRepository @Inject constructor(
 //    }
 
     suspend fun betScoreChanged(matchId: Int, homeScore: Int?, awayScore: Int?) {
-        betList.value?.find { it.match.id == matchId }?.apply {
-            this.homeGoalsBet = homeScore
-            this.awayGoalsBet = awayScore
-            if (homeScore != null && awayScore != null) {
-                placeBetOnApi(matchId, homeScore, awayScore)
-                matchDao.insertMatch(this.asDBMatch())
+        betList.value?.find { it.match.id == matchId }?.let {
+            withContext(Dispatchers.IO) {
+                it.homeGoalsBet = homeScore
+                it.awayGoalsBet = awayScore
+                matchDao.insertMatch(it.asDBMatch())
             }
+            if (homeScore != null && awayScore != null) {
+                //TODO manejar cuando backend responde mal
+                placeBetOnApi(matchId, homeScore, awayScore)
+            }
+//            this.homeGoalsBet = homeScore
+//            this.awayGoalsBet = awayScore
+//            if (homeScore != null && awayScore != null) {
+//                placeBetOnApi(matchId, homeScore, awayScore)
+//                val bet = this
+//                withContext(Dispatchers.IO) {
+//                    matchDao.insertMatch(bet.asDBMatch())
+//                }
+//            }
         }
     }
 
@@ -109,37 +125,12 @@ class MatchRepository @Inject constructor(
 
     }
 
-//    private suspend fun getPredictionForMatch(match: DBMatch): Pair<Int, Int>? {
-//        val result: Pair<Int, Int>?
-//        if (match.date >= LocalDate.now()) {
-//            val prediction =
-//                predictionList.value?.find { prediction -> prediction.matchId == match.matchId && prediction.userId == loggedUser.userId }
-//            result = if (prediction != null) Pair(
-//                prediction.homeGoalsBet,
-//                prediction.awayGoalsBet
-//            ) else null
-//        } else {
-//            withContext(Dispatchers.IO) {
-//                val betDetails = getBetByMatchIdFromApi(match.matchId)
-//                betDao.deleteBet(loggedUser.userId, match.matchId)
-//                result = if (betDetails != null) {
-//                    Pair(
-//                        betDetails.homeTeamPrediction!!,
-//                        betDetails.awayTeamPrediction!!
-//                    )
-//                } else null
-//            }
-//        }
-//        return result
-//    }
-
     private suspend fun placeBetOnApi(
         matchId: Int,
         homeTeamPrediction: Int,
         awayTeamPrediction: Int
-    ) {
-        withContext(Dispatchers.IO) {
-            matchApi.placeBet(
+    ): BetAnswer {
+            return matchApi.placeBet(
                 matchId,
                 BetBody(
                     homeTeamPrediction,
@@ -147,11 +138,14 @@ class MatchRepository @Inject constructor(
                 )
             )
 
-        }
     }
 
     suspend fun getBetDetails(matchId: Int): SeeDetailsBet? {
         return getBetByMatchIdFromApi(matchId)
+    }
+
+    suspend fun loadMoreBets(numberOfPageToLoad: Int) {
+        _extraBets.value = _extraBets.value?.plus(matchApi.getMatches(numberOfPageToLoad).matches.map { it.asBet() })
     }
 
 }

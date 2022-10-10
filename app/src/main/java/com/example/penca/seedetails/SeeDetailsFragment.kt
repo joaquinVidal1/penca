@@ -64,6 +64,8 @@ class SeeDetailsFragment : Fragment() {
     }
 
     private fun cleanScreen() {
+        binding.homeTeamImage.visibility = View.INVISIBLE
+        binding.awayTeamImage.visibility = View.INVISIBLE
         binding.dateText.visibility = View.GONE
         binding.statusText.visibility = View.GONE
         binding.homeTeamName.text = ""

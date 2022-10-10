@@ -11,8 +11,4 @@ sealed class ScreenItem(val id: Int) {
     data class ScreenHeader(val header: Header) : ScreenItem(
         ITEM_VIEW_TYPE_HEADER_DATE
     )
-
-    class ScreenNothingFound : ScreenItem(
-        ITEM_VIEW_TYPE_NOTHING_FOUND
-    )
 }

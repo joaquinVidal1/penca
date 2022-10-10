@@ -1,8 +1,7 @@
 package com.example.penca.network.entities
 
 import com.example.penca.database.DBMatch
-import com.example.penca.domain.entities.Match
-import com.example.penca.domain.entities.Team
+import com.example.penca.domain.entities.*
 import com.squareup.moshi.Json
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -76,4 +75,65 @@ data class NetworkMatch(
         this.predictedHomeGoals,
         this.predictedAwayGoals
     )
+
+    fun asScreenBet(): ScreenItem {
+        val homeTeam = Team(
+            this.homeTeamId,
+            this.homeTeamName,
+            this.homeTeamLogo
+        )
+
+        val awayTeam = Team(
+            this.awayTeamId,
+            this.awayTeamName,
+            this.awayTeamLogo
+        )
+
+        val match = Match(
+            this.matchId,
+            homeTeam,
+            awayTeam,
+            this.getLocalDate(this.date),
+            this.homeTeamGoals,
+            this.awayTeamGoals
+        )
+
+        return ScreenItem.ScreenBet(
+            Bet(
+                match,
+                if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.Pending,
+                this.predictedHomeGoals,
+                this.predictedAwayGoals
+            )
+        )
+    }
+
+    fun asBet(): Bet {
+        val homeTeam = Team(
+            this.homeTeamId,
+            this.homeTeamName,
+            this.homeTeamLogo
+        )
+
+        val awayTeam = Team(
+            this.awayTeamId,
+            this.awayTeamName,
+            this.awayTeamLogo
+        )
+
+        val match = Match(
+            this.matchId,
+            homeTeam,
+            awayTeam,
+            this.getLocalDate(this.date),
+            this.homeTeamGoals,
+            this.awayTeamGoals
+        )
+        return Bet(
+            match,
+            if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.Pending,
+            this.predictedHomeGoals,
+            this.predictedAwayGoals
+        )
+    }
 }

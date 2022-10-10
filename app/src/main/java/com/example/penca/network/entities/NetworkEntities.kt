@@ -32,17 +32,4 @@ data class BetBody(
     val awayTeamGoals: Int
 )
 
-data class BetAnswer(
-    @Json(name = "userId")
-    val userId: Int,
-
-    @Json(name = "matchId")
-    val matchId: Int,
-
-    @Json(name = "homeGoals")
-    val homeGoals: Int,
-
-    @Json(name = "awayGoals")
-    val awayGoals: Int
-)
 

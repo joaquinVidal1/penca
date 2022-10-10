@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -16,11 +18,10 @@ import java.lang.ClassCastException
 
 class MainScreenAdapter(
     val context: Context,
-    var screenItems: List<ScreenItem>,
     private val onModifyLocalListener: (Bet) -> Unit,
     private val onModifyAwayListener: (Bet) -> Unit,
     private val onSeeDetailsClicked: (Bet) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<ScreenItem, RecyclerView.ViewHolder>(MainScreenDifCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -38,19 +39,12 @@ class MainScreenAdapter(
                     false
                 )
             )
-            ITEM_VIEW_TYPE_NOTHING_FOUND -> NothingFoundViewHolder(
-                NothingFoundBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
             else -> throw ClassCastException("Unknow viewType $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = screenItems[position]
+        val item = getItem(position)
         when (holder) {
             is BetViewHolder -> {
                 holder.bind(
@@ -60,21 +54,14 @@ class MainScreenAdapter(
             is HeaderViewHolder -> {
                 holder.bind(item as ScreenItem.ScreenHeader)
             }
-            is NothingFoundViewHolder -> {
-                holder.bind()
-            }
         }
     }
 
-    override fun getItemCount(): Int {
-        return screenItems.size
-    }
-
     override fun getItemViewType(position: Int): Int {
-        return when (screenItems[position]) {
+        return when (getItem(position)) {
             is ScreenItem.ScreenHeader -> ITEM_VIEW_TYPE_HEADER_DATE
             is ScreenItem.ScreenBet -> ITEM_VIEW_TYPE_BET
-            is ScreenItem.ScreenNothingFound -> ITEM_VIEW_TYPE_NOTHING_FOUND
+            else -> throw IllegalArgumentException("Unknown ListItem class")
         }
     }
 
@@ -240,9 +227,15 @@ class MainScreenAdapter(
         }
     }
 
-    inner class NothingFoundViewHolder(binding: NothingFoundBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind() {}
+    class MainScreenDifCallBack: DiffUtil.ItemCallback<ScreenItem>(){
+        override fun areItemsTheSame(oldItem: ScreenItem, newItem: ScreenItem): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: ScreenItem, newItem: ScreenItem): Boolean {
+            return oldItem == newItem
+        }
+
     }
 
 }

@@ -1,11 +1,11 @@
 package com.example.penca.mainscreen
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
 import com.example.penca.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,6 +38,7 @@ enum class BetFilter {
 class MainScreenViewModel @Inject constructor(private val repository: MatchRepository) :
     ViewModel() {
 
+    private val numberOfPageLoaded = 1
     private val _query = MutableLiveData("")
     val bets = MediatorLiveData<List<ScreenItem>>()
     private val nonFilteredBets = Transformations.map(repository.betList){ it }
@@ -152,6 +153,13 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
             repository.refreshMatches()
             _loadingContents.postValue(false)
         }
+    }
+
+     fun loadMoreBets(){
+        numberOfPageLoaded.inc()
+         viewModelScope.launch {
+             repository.loadMoreBets(numberOfPageLoaded)
+         }
     }
 
 }
