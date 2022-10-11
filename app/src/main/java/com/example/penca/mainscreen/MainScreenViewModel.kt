@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
 import com.example.penca.repository.MatchRepository
+import com.example.penca.utils.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,6 +59,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     private val _filter = MutableLiveData(BetFilter.SeeAll)
     val filter: LiveData<BetFilter>
         get() = _filter
+
+    private val _betChanged =  MutableLiveData<Int>(-1)
+    val betChanged: LiveData<Int>
+        get() = _betChanged
 
     private val _loadingContents = MutableLiveData(false)
     val loadingContents: LiveData<Boolean>
@@ -165,6 +170,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
             } else {
                 it.bet.awayGoalsBet = newScore
             }
+            _betChanged.value = matchId
             viewModelScope.launch {
                 repository.betScoreChanged(it.bet.match.id, it.bet.homeGoalsBet, it.bet.awayGoalsBet)
             }

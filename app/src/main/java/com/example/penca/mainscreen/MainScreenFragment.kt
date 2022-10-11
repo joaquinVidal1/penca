@@ -31,6 +31,7 @@ class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var adapter: MainScreenAdapter
     private lateinit var layoutManager: LinearLayoutManager
+    private var itemChanged: Int = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -140,8 +141,17 @@ class MainScreenFragment : Fragment() {
                 binding.recyclerList.visibility = View.VISIBLE
             }
             adapter.submitList(it.toMutableList() ?: listOf())
-            adapter.notifyDataSetChanged()
+            if (itemChanged > -1){
+                adapter.notifyItemChanged(it.indexOfFirst { it is ScreenItem.ScreenBet && it.bet.match.id ==itemChanged })
+                itemChanged = -1
+            }else {
+                adapter.notifyDataSetChanged()
+            }
             //TODO ver la forma de passarle la posocion del item y llamar al itemChanged
+        }
+
+        viewModel.betChanged.observe(viewLifecycleOwner){
+            itemChanged = it
         }
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
