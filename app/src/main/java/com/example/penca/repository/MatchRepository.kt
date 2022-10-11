@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.example.penca.database.MatchDao
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter
+import com.example.penca.mainscreen.BetFilter.Companion.getStringForApi
 import com.example.penca.network.*
 import com.example.penca.network.entities.BetAnswer
 import com.example.penca.network.entities.BetBody
@@ -24,14 +25,12 @@ class MatchRepository @Inject constructor(
     private val matchDao: MatchDao,
     private val matchApi: MatchService
 ) {
+    val betList = MediatorLiveData<List<Bet>>()
+
     private val _noMoreBets = MutableLiveData(false)
     val noMoreBets: LiveData<Boolean>
         get() = _noMoreBets
 
-    private val _betList = MutableLiveData<List<Bet>>(listOf())
-//    val betList: List<Bet>
-//        get() = databaseMatches.value ?: listOf()
-    val betList = MediatorLiveData<List<Bet>>()
     private val databaseMatches: LiveData<List<Bet>> =
         Transformations.map(matchDao.getMatches()) {
             it.map { dbMatch -> dbMatch.asBet() }
@@ -40,10 +39,12 @@ class MatchRepository @Inject constructor(
 
     init {
         betList.addSource(databaseMatches) {
-            betList.value = it
+            betList.value =
+                it.plus(betList.value ?: listOf()).distinctBy { bet -> bet.match.id }.toList()
         }
-        betList.addSource(_extraBets){
-            betList.value = _betList.value?.plus(it ?: listOf())
+        betList.addSource(_extraBets) {
+            betList.value =
+                it?.plus(betList.value ?: listOf())?.distinctBy { bet -> bet.match.id } ?: listOf()
         }
     }
 
@@ -51,40 +52,19 @@ class MatchRepository @Inject constructor(
     val networkError: LiveData<Boolean>
         get() = _networkError
 
-    private val _matchList = MutableLiveData<List<Match>>(listOf())
-
-//    private suspend fun getBetListFromMatchList(it: List<Match>): List<Bet> {
-//        return it.map { match ->
-//            withContext(Dispatchers.IO) {
-//                try {
-//                    val bet = UserNetwork.match.getMatchDetails(
-//                        match.id,
-//                        loggedUser.token
-//                    )
-//                    val betStatus = if (bet.predictionStatus == "not_predicted") {
-//                        BetStatus.Pending
-//                    } else {
-//                        BetStatus.Done
-//                    }
-//                    Bet(match, betStatus, bet.homeTeamGoals, bet.awayTeamGoals)
-//                } catch (e: HttpException) {
-//                    Bet(match, BetStatus.Pending, null, null)
-//                }
-//            }
-//        }
-//    }
-
     suspend fun betScoreChanged(matchId: Int, homeScore: Int?, awayScore: Int?) {
-        betList.value?.find { it.match.id == matchId }?.let {
+        val bet = betList.value?.find { it.match.id == matchId }
+        if (bet != null) {
+            bet.homeGoalsBet = homeScore
+            bet.awayGoalsBet = awayScore
             withContext(Dispatchers.IO) {
-                it.homeGoalsBet = homeScore
-                it.awayGoalsBet = awayScore
-                matchDao.insertMatch(it.asDBMatch())
+                matchDao.insertMatch(bet.asDBMatch())
             }
             if (homeScore != null && awayScore != null) {
                 //TODO manejar cuando backend responde mal
                 placeBetOnApi(matchId, homeScore, awayScore)
             }
+        }
 //            this.homeGoalsBet = homeScore
 //            this.awayGoalsBet = awayScore
 //            if (homeScore != null && awayScore != null) {
@@ -94,7 +74,16 @@ class MatchRepository @Inject constructor(
 //                    matchDao.insertMatch(bet.asDBMatch())
 //                }
 //            }
-        }
+//        val updatedDBList = databaseMatches.apply {
+//            this.value?.find { it.match.id == matchId }
+//                .let {
+//                    it?.homeGoalsBet = homeScore
+//                    it?.awayGoalsBet = awayScore
+//                }
+//        }
+//        withContext(Dispatchers.IO) {
+//            matchDao.emptyAndInsert(updatedDBList.value!!.map { it.asDBMatch() })
+//        }
     }
 
     private suspend fun getBetByMatchIdFromApi(matchId: Int): SeeDetailsBet? {
@@ -107,16 +96,7 @@ class MatchRepository @Inject constructor(
         }
     }
 
-//    suspend fun refreshMatches() {
-//        withContext(Dispatchers.IO) {
-//            _matchList.postValue(
-//                UserNetwork.match.getMatches(loggedUser.token).matches
-//                    .map { it.asDomainMatch() })
-//            _betList.postValue(getBetListFromMatchList(_matchList.value!!))
-//        }
-//    }
-
-    suspend fun refreshMatches(filter: BetFilter = BetFilter.SeeAll, query: String = "") {
+    suspend fun refreshMatches() {
         try {
             val matches = matchApi.getMatches()
             withContext(Dispatchers.IO) {
@@ -135,13 +115,13 @@ class MatchRepository @Inject constructor(
         homeTeamPrediction: Int,
         awayTeamPrediction: Int
     ): BetAnswer {
-            return matchApi.placeBet(
-                matchId,
-                BetBody(
-                    homeTeamPrediction,
-                    awayTeamPrediction
-                )
+        return matchApi.placeBet(
+            matchId,
+            BetBody(
+                homeTeamPrediction,
+                awayTeamPrediction
             )
+        )
 
     }
 
@@ -149,12 +129,21 @@ class MatchRepository @Inject constructor(
         return getBetByMatchIdFromApi(matchId)
     }
 
-    suspend fun loadMoreBets(numberOfPageToLoad: Int) {
-        val obtainedMatches = matchApi.getMatches(numberOfPageToLoad, 10).matches
-        if (obtainedMatches.isEmpty()){
+    suspend fun loadMoreBets(
+        numberOfPageToLoad: Int,
+        teamName: String? = null,
+        betFilter: BetFilter = BetFilter.SeeAll
+    ) {
+        val obtainedMatches = matchApi.getMatches(
+            numberOfPageToLoad,
+            20,
+            teamName,
+            getStringForApi(betFilter)
+        ).matches
+        if (obtainedMatches.isEmpty()) {
             _noMoreBets.value = true
         }
-        _extraBets.value = _extraBets.value?.plus(obtainedMatches.map { it.asBet() })
+        _extraBets.value = betList.value?.plus(obtainedMatches.map { it.asBet() })
     }
 
 }

@@ -2,7 +2,6 @@ package com.example.penca.network.entities
 
 import com.example.penca.domain.entities.BetResult
 import com.example.penca.domain.entities.BetStatus
-import com.example.penca.network.entities.NetworkMatchEvent
 import com.squareup.moshi.Json
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,7 +53,7 @@ data class SeeDetailsBet(
 
     fun getStatusFromString(): BetStatus {
         return if (predictionStatus == "not_predicted") {
-            BetStatus.Pending
+            BetStatus.NotDone
         } else {
             BetStatus.Done
         }

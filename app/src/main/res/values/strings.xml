@@ -33,4 +33,5 @@
     <string name="invalid_email">Dirección de correo inválida</string>
     <string name="must_enter_password">Debes ingresar una contraseña de al menos 8 caracteres</string>
     <string name="shared_preferences_name">PencaPreferences</string>
+    <string name="pending">Pending</string>
 </resources>

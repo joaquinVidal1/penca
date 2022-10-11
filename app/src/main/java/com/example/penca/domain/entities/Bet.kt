@@ -10,12 +10,12 @@ enum class BetResult {
 
 enum class BetStatus {
     Done,
-    Pending
+    NotDone
 }
 
 data class Bet(
     val match: Match,
-    val status: BetStatus = BetStatus.Pending,
+    val status: BetStatus = BetStatus.NotDone,
     var homeGoalsBet: Int? = null,
     var awayGoalsBet: Int? = null
 ) {

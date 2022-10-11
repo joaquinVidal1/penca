@@ -17,7 +17,7 @@ data class Match(
     val events: List<MatchEvent>? = null
 ) {
     val status
-        get() = if (date < LocalDate.now()) {
+        get() = if (date.isBefore(LocalDate.now())) {
             MatchStatus.Played
         } else {
             MatchStatus.Pending

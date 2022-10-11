@@ -93,7 +93,7 @@ class SeeDetailsFragment : Fragment() {
         val dateText = binding.dateText
         statusText.visibility = View.VISIBLE
         dateText.visibility = View.VISIBLE
-        if (bet.getStatusFromString() == BetStatus.Pending) {
+        if (bet.getStatusFromString() == BetStatus.NotDone) {
             setPendingBet(statusText, dateText)
         } else {
             if (bet.result == BetResult.Wrong) {

@@ -29,33 +29,16 @@ class DBMatch(
     fun asBet(): Bet {
         val homeTeam = Team(this.homeTeamId, this.homeTeamName, this.homeTeamLogo)
         val awayTeam = Team(this.awayTeamId, this.awayTeamName, this.awayTeamLogo)
-        if (this.date.isBefore(LocalDate.now())) {
-            val match = Match(
-                this.matchId,
-                homeTeam,
-                awayTeam,
-                this.date,
-                null,
-                null,
-                null
-            )
-            val betStatus = if (this.goalsAway == null || this.goalsHome == null) {
-                BetStatus.Pending
+        val match = Match(matchId, homeTeam, awayTeam, date, goalsHome, goalsAway)
+        return Bet(
+            match,
+            if (this.goalsAway == null || this.goalsHome == null) {
+                BetStatus.NotDone
             } else {
                 BetStatus.Done
-            }
-            return Bet(match, betStatus, this.goalsHome, this.goalsAway)
-        } else {
-            val match = Match(
-                this.matchId,
-                homeTeam,
-                awayTeam,
-                this.date,
-                this.goalsHome,
-                this.goalsAway,
-                null
-            )
-            return Bet(match)
-        }
+            },
+            predictedGoalsHome,
+            predictedGoalsAway
+        )
     }
 }

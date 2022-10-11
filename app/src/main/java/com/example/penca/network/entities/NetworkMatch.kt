@@ -55,7 +55,7 @@ data class NetworkMatch(
         return Match(matchId, homeTeam, awaTeam, localDate, homeTeamGoals, awayTeamGoals, null)
     }
 
-    fun getLocalDate(date: String): LocalDate {
+    private fun getLocalDate(date: String): LocalDate {
         val inputFormatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
         return LocalDate.parse(date, inputFormatter)
@@ -101,7 +101,7 @@ data class NetworkMatch(
         return ScreenItem.ScreenBet(
             Bet(
                 match,
-                if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.Pending,
+                if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.NotDone,
                 this.predictedHomeGoals,
                 this.predictedAwayGoals
             )
@@ -131,7 +131,7 @@ data class NetworkMatch(
         )
         return Bet(
             match,
-            if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.Pending,
+            if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.NotDone,
             this.predictedHomeGoals,
             this.predictedAwayGoals
         )

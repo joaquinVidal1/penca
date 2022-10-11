@@ -41,10 +41,22 @@
             android:id="@+id/entire_bet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="35dp"
             android:background="@drawable/background_list_item_bet_body_pending"
+            android:paddingBottom="35dp"
             app:layout_constraintStart_toStartOf="@id/header_bet"
             app:layout_constraintTop_toBottomOf="@id/header_bet">
+
+            <TextView
+                android:id="@+id/match_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="matchId"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/user_score"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/image_local_team"
@@ -143,6 +155,7 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/see_details_button"
             android:layout_width="match_parent"
@@ -164,21 +177,21 @@
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/see_details"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textSize="12sp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/see_details_vector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:src="@drawable/see_details_vector"
-                app:layout_constraintTop_toTopOf="@id/see_details_text"
                 app:layout_constraintBottom_toBottomOf="@id/see_details_text"
                 app:layout_constraintStart_toEndOf="@id/see_details_text"
-                android:layout_marginStart="5dp"/>
+                app:layout_constraintTop_toTopOf="@id/see_details_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

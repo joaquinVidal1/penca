@@ -12,6 +12,9 @@ interface MatchService {
     suspend fun getMatches(
         @Query("pageNumber") pageNumber: Int = 1,
         @Query("pageSize") pageSize: Int = 20,
+        @Query("teamName") teamName: String? = null,
+        @Query("status") status: String? = null,
+        @Query("order") order: String = "DESC"
     ): MatchesContainer
 
     @GET("/api/v1/match/{matchId}")

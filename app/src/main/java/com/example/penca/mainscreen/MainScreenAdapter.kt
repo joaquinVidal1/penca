@@ -74,42 +74,15 @@ class MainScreenAdapter(
             onEditLocalResult: (Bet) -> Unit,
             onEditAwayResult: (Bet) -> Unit
         ) {
-            binding.matchStatusText.text = bet.match.status.toString()
-            placeImage(binding.imageLocalTeam, bet.match.homeTeam.image)
-            placeImage(binding.imageAwayTeam, bet.match.awayTeam.image)
-            binding.nameLocalTeam.text = bet.match.homeTeam.name
-            binding.nameAwayTeam.text = bet.match.awayTeam.name
-
-            binding.localTeamScoreBet.text =
-                bet.homeGoalsBet?.toString() ?: " "
-            binding.awayTeamScoreBet.text =
-                bet.awayGoalsBet?.toString() ?: " "
-
+            bindCommonData(bet)
             if (bet.match.status == MatchStatus.Pending) {
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
             } else {
-                binding.localTeamScoreBet.isClickable = false
-                binding.awayTeamScoreBet.isClickable = false
-       //         binding.finalScore.visibility = View.VISIBLE
-                binding.userScore.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.color_background_app
-                    )
-                )
-                binding.entireBetBody.background =
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.background_list_item_bet_body_played
-                    )
-                binding.seeDetailsButton.visibility = View.VISIBLE
-                binding.seeDetailsButton.setOnClickListener { onSeeDetailsClicked(bet) }
-                val finalScoreText =
-                    bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
-       //         binding.finalScore.text = finalScoreText
+                bindPlayedMatch(bet)
+
                 if (bet.status == BetStatus.Done) {
-                    binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
-                    binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
+//                    binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
+//                    binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
                     if (bet.result == BetResult.Wrong) {
                         bindPlayedMatchWrongBet()
                     } else {
@@ -122,7 +95,42 @@ class MainScreenAdapter(
             }
         }
 
-        private fun placeImage(imageView: ImageView, image: String){
+        private fun bindPlayedMatch(bet: Bet) {
+            binding.localTeamScoreBet.isClickable = false
+            binding.awayTeamScoreBet.isClickable = false
+            //         binding.finalScore.visibility = View.VISIBLE
+            binding.userScore.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.color_background_app
+                )
+            )
+            binding.entireBetBody.background =
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.background_list_item_bet_body_played
+                )
+            binding.seeDetailsButton.visibility = View.VISIBLE
+            binding.seeDetailsButton.setOnClickListener { onSeeDetailsClicked(bet) }
+            val finalScoreText =
+                bet.match.goalsLocal.toString() + " - " + bet.match.goalsAway.toString()
+            //         binding.finalScore.text = finalScoreText
+        }
+
+        private fun bindCommonData(bet: Bet) {
+            binding.matchId.text = bet.match.id.toString()
+            placeImage(binding.imageLocalTeam, bet.match.homeTeam.image)
+            placeImage(binding.imageAwayTeam, bet.match.awayTeam.image)
+            binding.nameLocalTeam.text = bet.match.homeTeam.name
+            binding.nameAwayTeam.text = bet.match.awayTeam.name
+            binding.localTeamScoreBet.text =
+                bet.homeGoalsBet?.toString() ?: " "
+            binding.awayTeamScoreBet.text =
+                bet.awayGoalsBet?.toString() ?: " "
+
+        }
+
+        private fun placeImage(imageView: ImageView, image: String) {
             val circularProgressDrawable = CircularProgressDrawable(context)
             circularProgressDrawable.strokeWidth = 5f
             circularProgressDrawable.centerRadius = 30f
@@ -184,6 +192,9 @@ class MainScreenAdapter(
             onEditAwayResult: (Bet) -> Unit,
             bet: Bet
         ) {
+            binding.localTeamScoreBet.visibility = View.VISIBLE
+            binding.awayTeamScoreBet.visibility = View.VISIBLE
+            binding.matchStatusText.text = context.getString(R.string.pending)
             binding.headerBet.background =
                 ContextCompat.getDrawable(
                     context,
@@ -200,7 +211,7 @@ class MainScreenAdapter(
                 context,
                 R.drawable.background_score
             )
-       //     binding.finalScore.visibility = View.INVISIBLE
+            //     binding.finalScore.visibility = View.INVISIBLE
             binding.localTeamScoreBet.isClickable = true
             binding.awayTeamScoreBet.isClickable = true
             binding.localTeamScoreBet.setOnClickListener { onEditLocalResult(bet) }
@@ -221,7 +232,7 @@ class MainScreenAdapter(
         }
     }
 
-    class MainScreenDifCallBack: DiffUtil.ItemCallback<ScreenItem>(){
+    class MainScreenDifCallBack : DiffUtil.ItemCallback<ScreenItem>() {
         override fun areItemsTheSame(oldItem: ScreenItem, newItem: ScreenItem): Boolean {
             return oldItem.id == newItem.id
         }

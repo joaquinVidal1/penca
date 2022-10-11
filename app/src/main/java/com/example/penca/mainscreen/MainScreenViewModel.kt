@@ -1,12 +1,10 @@
 package com.example.penca.mainscreen
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
 import com.example.penca.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,8 +26,18 @@ enum class BetFilter {
                 SeeAccerted -> Triple(BetStatus.Done, BetResult.Right, MatchStatus.Played)
                 SeeMissed -> Triple(BetStatus.Done, BetResult.Wrong, MatchStatus.Played)
                 SeePending -> Triple(null, null, MatchStatus.Pending)
-                SeePlayedWithNoResult -> Triple(BetStatus.Pending, null, MatchStatus.Played)
+                SeePlayedWithNoResult -> Triple(BetStatus.NotDone, null, MatchStatus.Played)
                 SeeAll -> Triple(null, null, null)
+            }
+        }
+
+        fun getStringForApi(betFilter: BetFilter): String?{
+            return when (betFilter){
+                SeeAll -> null
+                SeeAccerted -> "correct"
+                SeeMissed -> "incorrect"
+                SeePending -> "pending"
+                SeePlayedWithNoResult -> "not_predicted"
             }
         }
     }
@@ -41,11 +49,11 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
 
     val noMoreBets = Transformations.map(repository.noMoreBets) { it }
     private var numberOfPageLoaded = 1
+    private var numberOfPageLoadedWithQueryOrFilter = 1
     private val _query = MutableLiveData("")
     val bets = MediatorLiveData<List<ScreenItem>>()
     private val nonFilteredBets = Transformations.map(repository.betList) {
-        Log.i("observer", it.toString())
-        it
+        it.sortedByDescending { bet ->  bet.match.date }
     }
     private val _filter = MutableLiveData(BetFilter.SeeAll)
     val filter: LiveData<BetFilter>
@@ -70,6 +78,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
                     }
                 }
             })
+            numberOfPageLoadedWithQueryOrFilter = 1
+            if (bets.value?.size!! < 5 && !_loadingContents.value!!){
+                loadMoreBets()
+            }
         }
         bets.addSource(nonFilteredBets) { betList ->
             bets.value = getScreenList(betList.let { it1 ->
@@ -94,6 +106,10 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
                 }
             }
                 ?.let { filterByQuery(it, query) })
+            numberOfPageLoadedWithQueryOrFilter = 1
+            if (bets.value?.size!! < 5 && !_loadingContents.value!!){
+                loadMoreBets()
+            }
         }
     }
 
@@ -114,7 +130,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
                     bet.match.status == MatchStatus.Pending
                 } else {
                     if (betFilter.second == null) {
-                        bet.match.status == MatchStatus.Played && bet.status == BetStatus.Pending
+                        bet.match.status == MatchStatus.Played && bet.status == BetStatus.NotDone
                     } else {
                         Triple(bet.status, bet.result, bet.match.status) == betFilter
                     }
@@ -141,14 +157,17 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         _query.value = query
     }
 
-    fun betScoreChanged(bet: Bet, newScore: Int, teamKind: TeamKind) {
-        if (teamKind == TeamKind.Home) {
-            bet.homeGoalsBet = newScore
-        } else {
-            bet.awayGoalsBet = newScore
-        }
-        viewModelScope.launch {
-            repository.betScoreChanged(bet.match.id, bet.homeGoalsBet, bet.awayGoalsBet)
+    fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
+        bets.value?.find { if (it is ScreenItem.ScreenBet) it.bet.match.id == matchId else false }.let {
+            it as ScreenItem.ScreenBet
+            if (teamKind == TeamKind.Home) {
+                it.bet.homeGoalsBet = newScore
+            } else {
+                it.bet.awayGoalsBet = newScore
+            }
+            viewModelScope.launch {
+                repository.betScoreChanged(it.bet.match.id, it.bet.homeGoalsBet, it.bet.awayGoalsBet)
+            }
         }
     }
 
@@ -165,10 +184,20 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     }
 
     fun loadMoreBets() {
+        val teamName = if (_query.value == null || _query.value == "") null else _query.value
+        val filter = _filter.value ?: BetFilter.SeeAll
         _loadingMoreBets.value = true
-        numberOfPageLoaded += 1
+        val pageToLoad: Int
+        if ((filter == BetFilter.SeeAll) && (_query.value == "")) {
+            numberOfPageLoadedWithQueryOrFilter = 1
+            numberOfPageLoaded += 1
+            pageToLoad = numberOfPageLoaded
+        }else{
+            pageToLoad = numberOfPageLoadedWithQueryOrFilter
+            numberOfPageLoadedWithQueryOrFilter += 1
+        }
         viewModelScope.launch {
-            repository.loadMoreBets(numberOfPageLoaded)
+            repository.loadMoreBets(pageToLoad, teamName, filter)
             _loadingMoreBets.postValue(false)
         }
     }

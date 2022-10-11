@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.NumberPicker
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,7 +15,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.penca.R
 import com.example.penca.databinding.FragmentMainScreenBinding
@@ -55,27 +53,20 @@ class MainScreenFragment : Fragment() {
         setObservers()
         setAdapter()
         setSearchItem()
-        //setScrollListener(mainScreenList)
+        setScrollListener(nestedScrollView)
 
         layoutManager = LinearLayoutManager(activity)
         mainScreenList.adapter = adapter
         mainScreenList.layoutManager = layoutManager
-        binding.filterButton.setOnClickListener { setFilterDialog(); viewModel.refreshMatches() }
+        binding.filterButton.setOnClickListener { setFilterDialog() }
 
-        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (!nestedScrollView.canScrollVertically(1)) {
-                if ((viewModel.noMoreBets.value == null) || viewModel.noMoreBets.value == false)
-                viewModel.loadMoreBets()
-            }
-        })
         setCarrousel()
     }
 
-    private fun setScrollListener(mainScreenList: RecyclerView) {
-        mainScreenList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
+    private fun setScrollListener(nestedScrollView: NestedScrollView) {
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!nestedScrollView.canScrollVertically(1)) {
+                if ((viewModel.noMoreBets.value == null) || viewModel.noMoreBets.value == false) {
                     viewModel.loadMoreBets()
                 }
             }
@@ -141,16 +132,16 @@ class MainScreenFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.bets.observe(viewLifecycleOwner) {
-            val screenList = mutableListOf<ScreenItem>()
             if (it == null || it.isEmpty()) {
                 binding.nothingFoundText.visibility = View.VISIBLE
                 binding.recyclerList.visibility = View.INVISIBLE
             } else {
                 binding.nothingFoundText.visibility = View.GONE
                 binding.recyclerList.visibility = View.VISIBLE
-                screenList.addAll(it)
             }
-            adapter.submitList(screenList)
+            adapter.submitList(it.toMutableList() ?: listOf())
+            adapter.notifyDataSetChanged()
+            //TODO ver la forma de passarle la posocion del item y llamar al itemChanged
         }
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
@@ -163,7 +154,7 @@ class MainScreenFragment : Fragment() {
             }
         }
 
-        viewModel.loadingMoreBets.observe(viewLifecycleOwner){
+        viewModel.loadingMoreBets.observe(viewLifecycleOwner) {
             if (it) {
                 binding.loadingMoreBets.visibility = View.VISIBLE
             } else {
@@ -185,7 +176,7 @@ class MainScreenFragment : Fragment() {
             bet.awayGoalsBet ?: 0
         }
         builder.setPositiveButton(getString(R.string.confirm)) { _, _ ->
-            viewModel.betScoreChanged(bet, numberPicker.value, teamKind)
+            viewModel.betScoreChanged(bet.match.id, numberPicker.value, teamKind)
         }
         builder.setNegativeButton(getString(R.string.cancel))
         { _, _ -> }
