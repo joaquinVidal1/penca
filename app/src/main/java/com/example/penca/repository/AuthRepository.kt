@@ -4,11 +4,16 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.penca.database.MatchDao
+import com.example.penca.domain.entities.ErrorResponse
 import com.example.penca.network.entities.AuthenticationBody
 import com.example.penca.network.entities.NetworkUser
 import com.example.penca.network.UserService
 import com.example.penca.utils.PreferenceHelper
 import com.example.penca.utils.SingleLiveEvent
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,9 +56,13 @@ class AuthRepository @Inject constructor(
             getMessage(errorResponse)
         }
 
-    //TODO habria que parsearlo del json con moshi
-    private fun getMessage(errorResponse: String?) =
-        errorResponse?.replace("{\"message\":\"", "")?.replace("\"}", "") ?: "error"
+    private fun getMessage(errorResponse: String?): String {
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+        val adapter: JsonAdapter<ErrorResponse> = moshi.adapter(ErrorResponse::class.java)
+        return adapter.fromJson(errorResponse)?.message ?: "error"
+    }
 
     suspend fun register(email: String, password: String) =
         try {

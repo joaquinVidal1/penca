@@ -47,13 +47,6 @@ data class NetworkMatch(
     @Json(name = "predictedAwayGoals")
     val predictedAwayGoals: Int?
 ) {
-    fun asDomainMatch(): Match {
-        val homeTeam = Team(homeTeamId, homeTeamName, homeTeamLogo)
-        val awaTeam = Team(awayTeamId, awayTeamName, awayTeamLogo)
-        //val matchStatus = if (status == "pending") MatchStatus.Pending else MatchStatus.Played
-        val localDate = getLocalDate(date)
-        return Match(matchId, homeTeam, awaTeam, localDate, homeTeamGoals, awayTeamGoals, null)
-    }
 
     private fun getLocalDate(date: String): LocalDate {
         val inputFormatter =
@@ -75,38 +68,6 @@ data class NetworkMatch(
         this.predictedHomeGoals,
         this.predictedAwayGoals
     )
-
-    fun asScreenBet(): ScreenItem {
-        val homeTeam = Team(
-            this.homeTeamId,
-            this.homeTeamName,
-            this.homeTeamLogo
-        )
-
-        val awayTeam = Team(
-            this.awayTeamId,
-            this.awayTeamName,
-            this.awayTeamLogo
-        )
-
-        val match = Match(
-            this.matchId,
-            homeTeam,
-            awayTeam,
-            this.getLocalDate(this.date),
-            this.homeTeamGoals,
-            this.awayTeamGoals
-        )
-
-        return ScreenItem.ScreenBet(
-            Bet(
-                match,
-                if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.NotDone,
-                this.predictedHomeGoals,
-                this.predictedAwayGoals
-            )
-        )
-    }
 
     fun asBet(): Bet {
         val homeTeam = Team(
@@ -131,7 +92,7 @@ data class NetworkMatch(
         )
         return Bet(
             match,
-            if (this.predictedAwayGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.NotDone,
+            if (this.predictedHomeGoals != null && this.predictedAwayGoals != null) BetStatus.Done else BetStatus.NotDone,
             this.predictedHomeGoals,
             this.predictedAwayGoals
         )
