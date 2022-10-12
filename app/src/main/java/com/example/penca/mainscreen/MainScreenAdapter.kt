@@ -75,14 +75,14 @@ class MainScreenAdapter(
             onEditAwayResult: (Bet) -> Unit
         ) {
             bindCommonData(bet)
+
             if (bet.match.status == MatchStatus.Pending) {
                 bindPendingMatch(onEditLocalResult, onEditAwayResult, bet)
+
             } else {
                 bindPlayedMatch(bet)
 
                 if (bet.status == BetStatus.Done) {
-//                    binding.awayTeamScoreBet.text = bet.awayGoalsBet.toString()
-//                    binding.localTeamScoreBet.text = bet.homeGoalsBet.toString()
                     if (bet.result == BetResult.Wrong) {
                         bindPlayedMatchWrongBet()
                     } else {
@@ -91,7 +91,6 @@ class MainScreenAdapter(
                 } else {
                     bindPlayedMatchWithoutBet()
                 }
-                View.VISIBLE
             }
         }
 

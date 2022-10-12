@@ -146,4 +146,9 @@ class MatchRepository @Inject constructor(
         _extraBets.value = betList.value?.plus(obtainedMatches.map { it.asBet() })
     }
 
+    suspend fun getBanners(): List<String>{
+        val response = matchApi.getBannersUrl()
+        return response.bannersUrls
+    }
+
 }

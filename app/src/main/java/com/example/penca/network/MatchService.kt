@@ -1,16 +1,16 @@
 package com.example.penca.network
 
-import com.example.penca.network.entities.BetAnswer
-import com.example.penca.network.entities.BetBody
-import com.example.penca.network.entities.MatchesContainer
-import com.example.penca.network.entities.SeeDetailsBet
+import com.example.penca.network.entities.*
 import retrofit2.http.*
 
 interface MatchService {
 
+    @GET("/api/v1/files/")
+    suspend fun getBannersUrl(): BannersResponse
+
     @GET("/api/v1/match")
     suspend fun getMatches(
-        @Query("pageNumber") pageNumber: Int = 1,
+        @Query("page") pageNumber: Int = 1,
         @Query("pageSize") pageSize: Int = 20,
         @Query("teamName") teamName: String? = null,
         @Query("status") status: String? = null,

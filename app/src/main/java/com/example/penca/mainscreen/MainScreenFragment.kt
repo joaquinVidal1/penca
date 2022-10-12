@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.util.ViewInfo
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.penca.R
 import com.example.penca.databinding.FragmentMainScreenBinding
@@ -61,7 +62,6 @@ class MainScreenFragment : Fragment() {
         mainScreenList.layoutManager = layoutManager
         binding.filterButton.setOnClickListener { setFilterDialog() }
 
-        setCarrousel()
     }
 
     private fun setScrollListener(nestedScrollView: NestedScrollView) {
@@ -74,9 +74,9 @@ class MainScreenFragment : Fragment() {
         })
     }
 
-    private fun setCarrousel() {
+    private fun setCarrousel(images: List<String>) {
         val carrousel = binding.carrousel
-        val carrouselAdapter = BannerSlidePagerAdapter(requireActivity())
+        val carrouselAdapter = BannerSlidePagerAdapter(requireActivity(), images)
         carrousel.adapter = carrouselAdapter
         binding.viewPageIndicator.setUpWithViewPager2(binding.carrousel)
         carrousel.setPageTransformer(ZoomOutPageTransformer())
@@ -132,6 +132,10 @@ class MainScreenFragment : Fragment() {
 
 
     private fun setObservers() {
+        viewModel.banners.observe(viewLifecycleOwner){
+            if (it.isNotEmpty()) setCarrousel(it)
+        }
+
         viewModel.bets.observe(viewLifecycleOwner) {
             if (it == null || it.isEmpty()) {
                 binding.nothingFoundText.visibility = View.VISIBLE
@@ -141,13 +145,14 @@ class MainScreenFragment : Fragment() {
                 binding.recyclerList.visibility = View.VISIBLE
             }
             adapter.submitList(it.toMutableList() ?: listOf())
+            //TODO lo de abajo no me gusta, y tiene que haber una solucion mejor
+            //la idea es evitar el blinkeo
             if (itemChanged > -1){
                 adapter.notifyItemChanged(it.indexOfFirst { it is ScreenItem.ScreenBet && it.bet.match.id ==itemChanged })
                 itemChanged = -1
             }else {
                 adapter.notifyDataSetChanged()
             }
-            //TODO ver la forma de passarle la posocion del item y llamar al itemChanged
         }
 
         viewModel.betChanged.observe(viewLifecycleOwner){
@@ -156,9 +161,19 @@ class MainScreenFragment : Fragment() {
 
         viewModel.loadingContents.observe(viewLifecycleOwner) {
             if (it) {
+                binding.filterButton.visibility = View.INVISIBLE
+                binding.headerTextMatch.visibility = View.INVISIBLE
+                binding.viewPageIndicator.visibility = View.INVISIBLE
+                binding.itemSearch.visibility = View.INVISIBLE
+                binding.searchButton.visibility = View.INVISIBLE
                 binding.recyclerList.visibility = View.INVISIBLE
                 binding.contentLoading.visibility = View.VISIBLE
             } else {
+                binding.filterButton.visibility = View.VISIBLE
+                binding.headerTextMatch.visibility = View.VISIBLE
+                binding.viewPageIndicator.visibility = View.VISIBLE
+                binding.itemSearch.visibility = View.VISIBLE
+                binding.searchButton.visibility = View.VISIBLE
                 binding.recyclerList.visibility = View.VISIBLE
                 binding.contentLoading.visibility = View.GONE
             }
@@ -203,18 +218,14 @@ class MainScreenFragment : Fragment() {
 
 }
 
-class BannerSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-    override fun getItemCount(): Int = 3
+class BannerSlidePagerAdapter(fa: FragmentActivity, private val images: List<String>) : FragmentStateAdapter(fa) {
+    override fun getItemCount() = images.size
 
     override fun createFragment(position: Int): Fragment {
         val fragment = FeatureCarrouselFragment()
         fragment.arguments = Bundle().apply {
-            putInt(
-                FeatureCarrouselFragment.ARG_DRAWABLE_ID, when (position) {
-                    0 -> R.drawable.banner_1
-                    1 -> R.drawable.banner_2
-                    else -> R.drawable.banner_3
-                }
+            putString(
+                FeatureCarrouselFragment.ARG_DRAWABLE_ID, images[position]
             )
         }
         return fragment
