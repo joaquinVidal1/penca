@@ -113,7 +113,6 @@ class MainScreenAdapter(
         }
 
         private fun bindCommonData(bet: Bet) {
-            binding.matchId.text = bet.match.id.toString()
             placeImage(binding.imageLocalTeam, bet.match.homeTeam.image)
             placeImage(binding.imageAwayTeam, bet.match.awayTeam.image)
             binding.nameLocalTeam.text = bet.match.homeTeam.name

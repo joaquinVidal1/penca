@@ -32,7 +32,7 @@ class DBMatch(
         val match = Match(matchId, homeTeam, awayTeam, date, goalsHome, goalsAway)
         return Bet(
             match,
-            if (this.goalsAway == null || this.goalsHome == null) {
+            if (this.predictedGoalsHome == null || this.predictedGoalsAway == null) {
                 BetStatus.NotDone
             } else {
                 BetStatus.Done

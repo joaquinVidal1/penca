@@ -46,18 +46,6 @@
             app:layout_constraintStart_toStartOf="@id/header_bet"
             app:layout_constraintTop_toBottomOf="@id/header_bet">
 
-            <TextView
-                android:id="@+id/match_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="matchId"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@id/user_score"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <ImageView
                 android:id="@+id/image_local_team"
                 android:layout_width="60dp"
