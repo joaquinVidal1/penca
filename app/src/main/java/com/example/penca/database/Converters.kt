@@ -2,12 +2,11 @@ package com.example.penca.database
 
 import androidx.room.TypeConverter
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 object Converters {
     @TypeConverter
     fun toDate(dateString: String?): LocalDate {
-            return LocalDate.parse(dateString)
+        return LocalDate.parse(dateString)
     }
 
     @TypeConverter

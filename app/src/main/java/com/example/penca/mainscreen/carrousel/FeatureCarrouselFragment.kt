@@ -45,7 +45,6 @@ class FeatureCarrouselFragment : Fragment() {
                 .error(R.drawable.cs_nycl_blankplaceholder)
                 .fitCenter()
                 .into(binding.bannerImage)
-
         }
 
     }

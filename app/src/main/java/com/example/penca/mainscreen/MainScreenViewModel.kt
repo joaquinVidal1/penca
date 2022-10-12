@@ -3,47 +3,14 @@ package com.example.penca.mainscreen
 import androidx.lifecycle.*
 import com.example.penca.domain.entities.*
 import com.example.penca.mainscreen.BetFilter.Companion.getBetStatusResultAndMatchStatus
-import com.example.penca.network.entities.BannersResponse
 import com.example.penca.repository.MatchRepository
-import com.example.penca.utils.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class TeamKind {
     Home,
     Away
-}
-
-enum class BetFilter {
-    SeeAll,
-    SeeAccerted,
-    SeeMissed,
-    SeePending,
-    SeePlayedWithNoResult;
-
-    companion object {
-        fun getBetStatusResultAndMatchStatus(betFilter: BetFilter): Triple<BetStatus?, BetResult?, MatchStatus?> {
-            return when (betFilter) {
-                SeeAccerted -> Triple(BetStatus.Done, BetResult.Right, MatchStatus.Played)
-                SeeMissed -> Triple(BetStatus.Done, BetResult.Wrong, MatchStatus.Played)
-                SeePending -> Triple(null, null, MatchStatus.Pending)
-                SeePlayedWithNoResult -> Triple(BetStatus.NotDone, null, MatchStatus.Played)
-                SeeAll -> Triple(null, null, null)
-            }
-        }
-
-        fun getStringForApi(betFilter: BetFilter): String? {
-            return when (betFilter) {
-                SeeAll -> null
-                SeeAccerted -> "correct"
-                SeeMissed -> "incorrect"
-                SeePending -> "pending"
-                SeePlayedWithNoResult -> "not_predicted"
-            }
-        }
-    }
 }
 
 @HiltViewModel
@@ -66,7 +33,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     val filter: LiveData<BetFilter>
         get() = _filter
 
-    private val _betChanged = MutableLiveData<Int>(-1)
+    private val _betChanged = MutableLiveData(-1)
     val betChanged: LiveData<Int>
         get() = _betChanged
 
@@ -82,6 +49,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         viewModelScope.launch {
             _banners.value = repository.getBanners()
         }
+
         bets.addSource(_filter) { filter ->
             bets.value = getScreenList(nonFilteredBets.value?.let { betList ->
                 filterBySelection(betList, filter).let { it1 ->
@@ -97,6 +65,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
                 loadMoreBets()
             }
         }
+
         bets.addSource(nonFilteredBets) { betList ->
             bets.value = getScreenList(betList.let { it1 ->
                 _filter.value?.let {
@@ -110,6 +79,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
                 }
             })
         }
+
         bets.addSource(_query) { query ->
             bets.value = getScreenList(nonFilteredBets.value?.let {
                 _filter.value?.let { it1 ->

@@ -18,7 +18,7 @@ interface MatchDao {
     fun insertMatch(match: DBMatch)
 
     @Transaction
-    fun emptyAndInsert(matches: List<DBMatch>){
+    fun emptyAndInsert(matches: List<DBMatch>) {
         emptyTable()
         insertAll(matches)
     }

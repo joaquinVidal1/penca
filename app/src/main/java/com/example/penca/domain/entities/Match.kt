@@ -2,9 +2,9 @@ package com.example.penca.domain.entities
 
 import java.time.LocalDate
 
-enum class MatchStatus( ) {
-    Played(),
-    Pending(),
+enum class MatchStatus {
+    Played,
+    Pending,
 }
 
 data class Match(

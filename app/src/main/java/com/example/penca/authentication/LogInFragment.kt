@@ -42,7 +42,8 @@ class LogInFragment : Fragment() {
 
         viewModel.alreadyLogged.observe(viewLifecycleOwner) {
             if (it) {
-                this.findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToFragmentMainScreen())
+                this.findNavController()
+                    .navigate(LogInFragmentDirections.actionLogInFragmentToFragmentMainScreen())
             }
         }
 

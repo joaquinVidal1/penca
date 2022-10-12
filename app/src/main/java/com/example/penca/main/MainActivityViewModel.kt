@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    authRepository: AuthRepository
 ) : ViewModel() {
     val logOut = Transformations.map(authRepository.shouldLogOut) { it }
 }

@@ -1,8 +1,7 @@
 package com.example.penca.domain.entities
 
-import com.example.penca.network.entities.NetworkMatchEvent
 
-enum class MatchEventKind() {
+enum class MatchEventKind {
     Goal,
     RedCard,
     YellowCard,
@@ -18,5 +17,4 @@ data class MatchEvent(
     val playerName: String,
     val kind: MatchEventKind,
     val team: MatchTeams
-) {
-}
+)

@@ -34,9 +34,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLogOut() {
-        viewModel.logOut.observe(this){
-            if (it){
-                supportFragmentManager.popBackStack(R.layout.fragment_log_in, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        viewModel.logOut.observe(this) {
+            if (it) {
+                supportFragmentManager.popBackStack(
+                    R.layout.fragment_log_in,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
             }
         }
     }

@@ -12,17 +12,17 @@ class PreferenceHelper @Inject constructor(
         return appContext.getSharedPreferences("PENCA_PREFERENCES", Context.MODE_PRIVATE)
     }
 
-    fun insertToken(token: String){
+    fun insertToken(token: String) {
         val editor = this.getPreferences().edit()
         editor.putString("token", token)
         editor.apply()
     }
 
-    fun getToken(): String{
-        return this.getPreferences().getString("token", "null")  ?: "null"
+    fun getToken(): String {
+        return this.getPreferences().getString("token", "null") ?: "null"
     }
 
-    fun removeToken(){
+    fun removeToken() {
         val editor = this.getPreferences().edit()
         editor.remove("token")
         editor.apply()

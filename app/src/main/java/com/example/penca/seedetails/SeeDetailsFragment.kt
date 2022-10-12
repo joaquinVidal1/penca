@@ -53,8 +53,8 @@ class SeeDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.networkError.observe(viewLifecycleOwner){
-            if (it){
+        viewModel.networkError.observe(viewLifecycleOwner) {
+            if (it) {
                 cleanScreen()
                 binding.contentLoading.hide()
                 binding.nothingFoundText.visibility = View.VISIBLE
@@ -81,7 +81,6 @@ class SeeDetailsFragment : Fragment() {
         } else {
             setBetEvents(bet.events.map { it.getMatchEventFromNetworkEvent() })
         }
-
         setLogos(bet.homeTeamLogo, bet.awayTeamLogo, R.drawable.cs_nycl_blankplaceholder)
         binding.awayTeamName.text = bet.awayTeamName
         binding.homeTeamName.text = bet.homeTeamName

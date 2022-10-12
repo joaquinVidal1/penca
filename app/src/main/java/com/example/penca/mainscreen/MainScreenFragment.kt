@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.util.ViewInfo
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.penca.R
 import com.example.penca.databinding.FragmentMainScreenBinding
@@ -65,7 +64,7 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun setScrollListener(nestedScrollView: NestedScrollView) {
-        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, _, _, _ ->
             if (!nestedScrollView.canScrollVertically(1)) {
                 if ((viewModel.noMoreBets.value == null) || viewModel.noMoreBets.value == false) {
                     viewModel.loadMoreBets()
@@ -132,7 +131,7 @@ class MainScreenFragment : Fragment() {
 
 
     private fun setObservers() {
-        viewModel.banners.observe(viewLifecycleOwner){
+        viewModel.banners.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) setCarrousel(it)
         }
 
@@ -144,18 +143,17 @@ class MainScreenFragment : Fragment() {
                 binding.nothingFoundText.visibility = View.GONE
                 binding.recyclerList.visibility = View.VISIBLE
             }
-            adapter.submitList(it.toMutableList() ?: listOf())
+            adapter.submitList(it.toMutableList())
             //TODO lo de abajo no me gusta, y tiene que haber una solucion mejor
-            //la idea es evitar el blinkeo
-            if (itemChanged > -1){
-                adapter.notifyItemChanged(it.indexOfFirst { it is ScreenItem.ScreenBet && it.bet.match.id ==itemChanged })
+            //la idea es evitar el blinkeo que se genera si haces notifyDataSetChanged()
+            //si no haces nada no se da cuenta de que cambio algo y no actualiza la lista
+            if (itemChanged > -1) {
+                adapter.notifyItemChanged(it.indexOfFirst { screenItem -> screenItem is ScreenItem.ScreenBet && screenItem.bet.match.id == itemChanged })
                 itemChanged = -1
-            }else {
-                adapter.notifyDataSetChanged()
             }
         }
 
-        viewModel.betChanged.observe(viewLifecycleOwner){
+        viewModel.betChanged.observe(viewLifecycleOwner) {
             itemChanged = it
         }
 
@@ -218,7 +216,8 @@ class MainScreenFragment : Fragment() {
 
 }
 
-class BannerSlidePagerAdapter(fa: FragmentActivity, private val images: List<String>) : FragmentStateAdapter(fa) {
+class BannerSlidePagerAdapter(fa: FragmentActivity, private val images: List<String>) :
+    FragmentStateAdapter(fa) {
     override fun getItemCount() = images.size
 
     override fun createFragment(position: Int): Fragment {

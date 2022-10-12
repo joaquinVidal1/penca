@@ -2,7 +2,6 @@ package com.example.penca.domain.entities
 
 import com.example.penca.database.DBMatch
 
-
 enum class BetResult {
     Right,
     Wrong

@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 
 @Database(entities = [DBMatch::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
-abstract class PencaDatabase: RoomDatabase() {
+abstract class PencaDatabase : RoomDatabase() {
 
     abstract val matchDao: MatchDao
 

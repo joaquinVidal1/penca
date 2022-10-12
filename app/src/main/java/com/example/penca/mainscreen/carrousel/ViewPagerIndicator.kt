@@ -87,21 +87,19 @@ class ViewPagerIndicator @JvmOverloads constructor(
         addDots(adapter.itemCount)
 
         val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-
             }
 
             override fun onPageSelected(position: Int) {
                 selectAt(position)
             }
 
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
         }
         viewPager2.registerOnPageChangeCallback(pageChangeCallback)
         pageChangeCallback.onPageSelected(0) // Necessary to trigger listener. setCurrentItem(0) wouldn't work.

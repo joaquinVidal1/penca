@@ -64,7 +64,7 @@ class RegisterFragment : Fragment() {
                 inputEmail.error = getString(R.string.invalid_email)
                 inputEmail.requestFocus()
             } else {
-                if (inputPassword.text.toString().length <8) {
+                if (inputPassword.text.toString().length < 8) {
                     inputPassword.error = getString(R.string.must_enter_password)
                     inputPassword.requestFocus()
                 } else {
@@ -79,11 +79,11 @@ class RegisterFragment : Fragment() {
             if (it == null) {
                 this.findNavController()
                     .navigate(RegisterFragmentDirections.actionRegisterFragmentToFragmentMainScreen())
-            }else{
+            } else {
                 if (it.contains("password")) {
                     inputPassword.error = it
                     inputPassword.requestFocus()
-                }else{
+                } else {
                     inputEmail.error = it
                     inputEmail.requestFocus()
                 }

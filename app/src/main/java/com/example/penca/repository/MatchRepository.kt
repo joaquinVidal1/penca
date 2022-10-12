@@ -12,7 +12,6 @@ import com.example.penca.network.*
 import com.example.penca.network.entities.BetAnswer
 import com.example.penca.network.entities.BetBody
 import com.example.penca.network.entities.SeeDetailsBet
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -48,6 +47,7 @@ class MatchRepository @Inject constructor(
         }
     }
 
+    //TODO manejar cuando no hay internet
     private val _networkError = MutableLiveData(false)
     val networkError: LiveData<Boolean>
         get() = _networkError
@@ -65,25 +65,6 @@ class MatchRepository @Inject constructor(
                 placeBetOnApi(matchId, homeScore, awayScore)
             }
         }
-//            this.homeGoalsBet = homeScore
-//            this.awayGoalsBet = awayScore
-//            if (homeScore != null && awayScore != null) {
-//                placeBetOnApi(matchId, homeScore, awayScore)
-//                val bet = this
-//                withContext(Dispatchers.IO) {
-//                    matchDao.insertMatch(bet.asDBMatch())
-//                }
-//            }
-//        val updatedDBList = databaseMatches.apply {
-//            this.value?.find { it.match.id == matchId }
-//                .let {
-//                    it?.homeGoalsBet = homeScore
-//                    it?.awayGoalsBet = awayScore
-//                }
-//        }
-//        withContext(Dispatchers.IO) {
-//            matchDao.emptyAndInsert(updatedDBList.value!!.map { it.asDBMatch() })
-//        }
     }
 
     private suspend fun getBetByMatchIdFromApi(matchId: Int): SeeDetailsBet? {
@@ -146,7 +127,7 @@ class MatchRepository @Inject constructor(
         _extraBets.value = betList.value?.plus(obtainedMatches.map { it.asBet() })
     }
 
-    suspend fun getBanners(): List<String>{
+    suspend fun getBanners(): List<String> {
         val response = matchApi.getBannersUrl()
         return response.bannersUrls
     }

@@ -30,9 +30,9 @@ class SeeDetailsViewModel @Inject constructor(private val repository: MatchRepos
         _loadingContents.value = true
         viewModelScope.launch {
             val obtainedBet = repository.getBetDetails(matchId)
-            if (obtainedBet == null){
+            if (obtainedBet == null) {
                 _networkError.value = true
-            }else{
+            } else {
                 bet = obtainedBet
                 _loadingContents.postValue(false)
             }

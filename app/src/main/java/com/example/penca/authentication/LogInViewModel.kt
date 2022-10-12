@@ -2,7 +2,6 @@ package com.example.penca.authentication
 
 import androidx.lifecycle.*
 import com.example.penca.repository.AuthRepository
-import com.example.penca.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -10,13 +9,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LogInViewModel @Inject constructor(
     private val authRepository: AuthRepository
-) :
-    ViewModel() {
+) : ViewModel() {
 
     val alreadyLogged = Transformations.map(authRepository.isUserLogged) { it }
 
-
-    private val _showProgressBar = MutableLiveData<Boolean>(false)
+    private val _showProgressBar = MutableLiveData(false)
     val showProgressBar: LiveData<Boolean>
         get() = _showProgressBar
 
