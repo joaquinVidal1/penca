@@ -34,6 +34,8 @@ class AuthRepository @Inject constructor(
     private lateinit var loggedUser: NetworkUser
 
     fun logOut() {
+        // TODO no se si es necesario crear un CoroutineScope, ya existiendo por ejemplo el GlobalScope, aunque hay que usarlo con cuidado.
+        // TODO tampoco es nescesario usar Dispatchers.IO para correr una corrutina de Room
         CoroutineScope(Dispatchers.IO).launch {
             matchDao.emptyTable()
         }
@@ -43,6 +45,7 @@ class AuthRepository @Inject constructor(
 
     suspend fun logIn(email: String, password: String) =
         try {
+            // TODO para que sirve el loggedUser?
             val networkUser = userApi.logIn(AuthenticationBody(email, password))
             loggedUser = networkUser
             preferenceHelper.insertToken(networkUser.token)
@@ -67,6 +70,10 @@ class AuthRepository @Inject constructor(
     suspend fun register(email: String, password: String) =
         try {
             val networkUser = userApi.register(AuthenticationBody(email, password))
+            // TODO para que sirve el loggedUser?
+            // TODO "Bearer" mejor agregarlo en un header usando un interceptor.
+            //  Si usaras el token para otra cosa tendrías que estar manipulando el token para ver si pones o sacas el Bearer
+            //  Veo que usas un interceptor, me parece que esto te quedó viejo
             networkUser.token = "Bearer " + networkUser.token
             loggedUser = networkUser
             matchDao.emptyTable()

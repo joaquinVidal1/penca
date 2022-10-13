@@ -4,11 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/logInFragment">
+
+<!--    TODO veo ids snake case y otros camel case, esta bueno ser consistente. Por lo general, los ids de las cosas son snake case-->
+
     <fragment
         android:id="@+id/fragment_main_screen"
         android:name="com.example.penca.mainscreen.MainScreenFragment"
         android:label="fragment_main_screen"
         tools:layout="@layout/fragment_main_screen">
+<!--    TODO hablando de consistencia, aca por ejemplo es una mezcla entre snake casey camel case    -->
         <action
             android:id="@+id/action_fragment_main_screen_to_seeDetailsFragment2"
             app:destination="@id/seeDetailsFragment"

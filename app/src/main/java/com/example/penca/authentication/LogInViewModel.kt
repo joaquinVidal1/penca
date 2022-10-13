@@ -23,6 +23,7 @@ class LogInViewModel @Inject constructor(
 
     fun logIn(email: String, password: String) {
         _showProgressBar.value = true
+        // TODO creo que no es necesario usar postValue
         viewModelScope.launch { _logInResult.postValue(authRepository.logIn(email, password)) }
     }
 

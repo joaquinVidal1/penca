@@ -12,7 +12,7 @@ interface MatchService {
     suspend fun getMatches(
         @Query("page") pageNumber: Int = 1,
         @Query("pageSize") pageSize: Int = 20,
-        @Query("teamName") teamName: String? = null,
+        @Query("teamName") teamName: String? = null, // TODO puede ser null esto? Si no se puede, no debería declararse nullable.
         @Query("status") status: String? = null,
         @Query("order") order: String = "DESC"
     ): MatchesContainer

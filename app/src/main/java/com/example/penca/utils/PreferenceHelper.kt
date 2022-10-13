@@ -12,6 +12,7 @@ class PreferenceHelper @Inject constructor(
         return appContext.getSharedPreferences("PENCA_PREFERENCES", Context.MODE_PRIVATE)
     }
 
+    // TODO podes crear una variable TOKEN_KEY con el valor "token", en vez de poner "token" cada vez
     fun insertToken(token: String) {
         val editor = this.getPreferences().edit()
         editor.putString("token", token)
@@ -19,6 +20,7 @@ class PreferenceHelper @Inject constructor(
     }
 
     fun getToken(): String {
+        // TODO porque tiene null comillas?, si queres usar null, es sin comillas, si queres mostrar que no hay token, usa un String vacio
         return this.getPreferences().getString("token", "null") ?: "null"
     }
 

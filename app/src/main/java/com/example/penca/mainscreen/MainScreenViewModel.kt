@@ -21,6 +21,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     val banners: LiveData<List<String>>
         get() = _banners
 
+    // TODO esta transformacion no hace nada
     val noMoreBets = Transformations.map(repository.noMoreBets) { it }
     private var numberOfPageLoaded = 1
     private var numberOfPageLoadedWithQueryOrFilter = 1
@@ -33,6 +34,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     val filter: LiveData<BetFilter>
         get() = _filter
 
+    // TODO esto no deberia ser necesario.
     private val _betChanged = MutableLiveData(-1)
     val betChanged: LiveData<Int>
         get() = _betChanged
@@ -83,6 +85,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
         bets.addSource(_query) { query ->
             bets.value = getScreenList(nonFilteredBets.value?.let {
                 _filter.value?.let { it1 ->
+                    // TODO conviene siempre que se pueda usar nombres explicitos, que representa it? que representa it1?
                     filterBySelection(
                         it,
                         it1
@@ -91,6 +94,8 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
             }
                 ?.let { filterByQuery(it, query) })
             numberOfPageLoadedWithQueryOrFilter = 1
+            // TODO los force unwrap !! conviene usarlos excepcionalmente. Es mejor usar en todo caso programar más defensivamente.
+            // TODO Osea, hacer val betSize = bets.value?.size ?: 0, y luego usar ese betSize
             if (bets.value?.size!! < 5 && !_loadingContents.value!!) {
                 loadMoreBets()
             }
@@ -142,6 +147,7 @@ class MainScreenViewModel @Inject constructor(private val repository: MatchRepos
     }
 
     fun betScoreChanged(matchId: Int, newScore: Int, teamKind: TeamKind) {
+        // TODO Aca lo que es it cambia, a menos que haya una linea de codigo, explicitar qué es it
         bets.value?.find { if (it is ScreenItem.ScreenBet) it.bet.match.id == matchId else false }
             .let {
                 it as ScreenItem.ScreenBet
